@@ -1,0 +1,20 @@
+[configuration]
+
+entry_symbol = "example_library_init"
+compatibility_minimum = "4.1"
+reloadable = true
+
+[libraries]
+
+macos.debug = "./libsen-godot.dylib"
+macos.release = "./libsen-godot.dylib"
+windows.debug.x86_32 = "./libsen-godot.dll"
+windows.release.x86_32 = "./libsen-godot.dll"
+windows.debug.x86_64 = "./libsen-godot.dll"
+windows.release.x86_64 = "./libsen-godot.dll"
+linux.debug.x86_64 = "./libsen-godot.so"
+linux.release.x86_64 = "./libsen-godot.so"
+linux.debug.arm64 = "./libsen-godot.so"
+linux.release.arm64 = "./libsen-godot.so"
+linux.debug.rv64 = "./libsen-godot.so"
+linux.release.rv64 = "./libsen-godot.so"
