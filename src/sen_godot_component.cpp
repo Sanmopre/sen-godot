@@ -30,13 +30,8 @@ sen::kernel::FuncResult SenGodotComponent::unload(sen::kernel::UnloadApi&& api)
     return Component::unload(std::move(api));
 }
 
-void SenGodotComponent::updateTickDuration(sen::Duration newDuration)
-{
-    tickDuration_ = newDuration;
-}
-
 void SenGodotComponent::runImpl(sen::kernel::RunApi& api)
 {
-    godot::UtilityFunctions::print("Timestamp ", api.getTime().sinceEpoch().toSeconds());
+   //godot::UtilityFunctions::print("Seconds since component start: ", api.getTime().sinceEpoch().toSeconds());
 }
 

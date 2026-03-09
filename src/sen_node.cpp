@@ -6,80 +6,61 @@
 
 // godot
 #include "godot_cpp/variant/utility_functions.hpp"
+#include <godot_cpp/classes/engine.hpp>
 
 namespace godot
 {
 
-void SenNode::_process(double delta)
+void SenNode::_physics_process(double p_delta)
 {
     kernel_->step();
 }
 
-i64 SenNode::get_tick_duration_milliseconds() const noexcept
-{
-    return tickDurationMilliseconds_;
-}
-
-void SenNode::set_tick_duration_milliseconds(i64 tick_duration_milliseconds)
-{
-    tickDurationMilliseconds_ = tick_duration_milliseconds;
-    component_->updateTickDuration(std::chrono::milliseconds(tickDurationMilliseconds_));
-}
-
 void SenNode::_ready()
 {
-    component_ = std::make_shared<SenGodotComponent>(std::chrono::milliseconds(tickDurationMilliseconds_));
+    const auto millisecondsPerTick = static_cast<i64>(1000.0 / Engine::get_singleton()->get_physics_ticks_per_second());
+    component_ = std::make_shared<SenGodotComponent>(std::chrono::milliseconds(millisecondsPerTick));
     const auto bootLoader = sen::kernel::Bootloader::fromYamlString("", false);
 
     sen::kernel::ComponentContext component;
     component.instance = component_.get();
     component.info.name = "sen_godot";
     component.info.description = "Sen-Godot extension";
-    component.info.buildInfo = {}; // TODO: Fill accordingly
+    component.info.buildInfo = {};
     component.config.cpuAffinity = 0xFF;
     component.config.group = 2;
     component.config.priority = sen::kernel::Priority::nominalMin;
     component.config.stackSize = 0;
-    //component.config.inQueue
-    //component.config.outQueue
-    //component.config.sleepPolicy
+    component.config.inQueue.evictionPolicy = sen::kernel::QueueEvictionPolicy::dropOldest;
+    component.config.inQueue.maxSize = 0;
+    component.config.outQueue.evictionPolicy = sen::kernel::QueueEvictionPolicy::dropOldest;
+    component.config.outQueue.maxSize = 0;
+    component.config.sleepPolicy = sen::kernel::SystemSleep{};
 
     sen::kernel::ComponentConfig config;
     config.cpuAffinity = 0xFF;
     config.group = 2;
     config.priority = sen::kernel::Priority::nominalMin;
     config.stackSize = 0;
-    //config.inQueue
-    //config.outQueue
-    //config.sleepPolicy
+    config.inQueue.evictionPolicy = sen::kernel::QueueEvictionPolicy::dropOldest;
+    config.inQueue.maxSize = 0;
+    config.outQueue.evictionPolicy = sen::kernel::QueueEvictionPolicy::dropOldest;
+    config.outQueue.maxSize = 0;
+    config.sleepPolicy = sen::kernel::SystemSleep{};
 
     const sen::kernel::KernelConfig::ComponentToLoad componentConfig
     {
         std::move(component),
         config,
-        {} // params
+        {} // empty params
     };
 
     bootLoader->getConfig().addToLoad(componentConfig);
-
     kernel_ = std::make_unique<sen::kernel::TestKernel>(bootLoader->getConfig());
 }
 
 void SenNode::_bind_methods()
 {
-    ClassDB::bind_method(D_METHOD("set_tick_duration_milliseconds", "tick_duration_milliseconds"), &SenNode::set_tick_duration_milliseconds);
-    ClassDB::bind_method(D_METHOD("get_tick_duration_milliseconds"), &SenNode::get_tick_duration_milliseconds);
-
-    ADD_PROPERTY(
-        PropertyInfo(
-            Variant::INT,
-            "tick_duration_milliseconds",
-            PROPERTY_HINT_RANGE,
-            "0,1000000,1,suffix:ms"
-        ),
-        "set_tick_duration_milliseconds",
-        "get_tick_duration_milliseconds"
-    );
 }
 
 }

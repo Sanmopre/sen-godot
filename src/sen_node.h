@@ -22,15 +22,11 @@ public:
     ~SenNode() override = default ;
 
     void _ready() override;
-    void _process(double delta) override;
-
-    [[nodiscard]] i64 get_tick_duration_milliseconds() const noexcept;
-    void set_tick_duration_milliseconds(i64 tick_duration_milliseconds);
+    void _physics_process(double p_delta) override;
 
 private:
     std::shared_ptr<SenGodotComponent> component_;
     std::unique_ptr<sen::kernel::TestKernel> kernel_;
-    i64 tickDurationMilliseconds_ = 100;
 };
 
 }

@@ -29,10 +29,10 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        godot-cpp
-        sen::core
-        sen::kernel
-        sen::util
+    godot-cpp
+    sen::core
+    sen::kernel
+    sen::util
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

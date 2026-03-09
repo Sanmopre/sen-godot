@@ -18,9 +18,6 @@ public:
     sen::kernel::FuncResult run(sen::kernel::RunApi& api) override;
     sen::kernel::FuncResult unload(sen::kernel::UnloadApi&& api) override;
 
-public:
-    void updateTickDuration(sen::Duration newDuration);
-
 private:
     void runImpl(sen::kernel::RunApi& api);
 
