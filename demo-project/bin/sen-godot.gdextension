@@ -18,3 +18,6 @@ linux.debug.arm64 = "./libsen-godot.so"
 linux.release.arm64 = "./libsen-godot.so"
 linux.debug.rv64 = "./libsen-godot.so"
 linux.release.rv64 = "./libsen-godot.so"
+
+[icons]
+SenNode = "res://icons/logo_simple.svg"
