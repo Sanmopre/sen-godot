@@ -25,6 +25,16 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/src/register_types.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/sen_godot_component.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/sen_godot_component.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/aircraft_manager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/aircraft_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/root_manager.h
+)
+
+add_sen_package(
+        TARGET std_fom
+        DESCRIPTION "Implements a simple class"
+        STL_FILES
+        src/fom/aircraft.stl
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -33,6 +43,7 @@ target_link_libraries(${PROJECT_NAME}
     sen::core
     sen::kernel
     sen::util
+    std_fom
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
