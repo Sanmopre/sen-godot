@@ -10,6 +10,7 @@
 
 namespace godot
 {
+
 class SenNode : public Node
 {
     GDCLASS(SenNode, Node)
@@ -23,6 +24,14 @@ public:
 
     void _ready() override;
     void _physics_process(double p_delta) override;
+
+public:
+    template <typename T>
+    void addNode(T *node)
+    {
+        static_assert(std::is_base_of_v<Node, T>, "T must derive from godot::Node");
+        this->add_child(node);
+    }
 
 private:
     std::shared_ptr<SenGodotComponent> component_;

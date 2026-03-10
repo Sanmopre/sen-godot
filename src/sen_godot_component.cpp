@@ -1,10 +1,12 @@
 #include "sen_godot_component.h"
 
 // godot
+#include "sen_node.h"
 #include "godot_cpp/variant/utility_functions.hpp"
+#include "managers/aircraft_manager.h"
 
-SenGodotComponent::SenGodotComponent(const sen::Duration& tickDuration)
-    : tickDuration_(tickDuration)
+SenGodotComponent::SenGodotComponent(godot::SenNode* senNode, const sen::Duration& tickDuration)
+    : senNode_(senNode), tickDuration_(tickDuration)
 {
 }
 
@@ -15,7 +17,18 @@ sen::kernel::FuncResult SenGodotComponent::load(sen::kernel::LoadApi&& load_api)
 
 sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 {
-    sources_["test.bus"] = api.getSource("test.bus");
+    aircraftSubscription_ = api.selectAllFrom<std_fom::AircraftInterface>("test.bus");
+    std::ignore = aircraftSubscription_->list.onAdded([this](const auto& iterator)
+    {
+        auto* object = memnew(AircraftManager);
+        senNode_->addNode<AircraftManager>(object);
+        aircraftManagers_.try_emplace("babbui", object);
+    });
+
+    std::ignore = aircraftSubscription_->list.onRemoved([this](const auto& iterator)
+    {
+
+    });
 
     return Component::init(std::move(api));
 }

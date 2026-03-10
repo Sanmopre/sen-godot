@@ -6,6 +6,8 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
+#include "managers/aircraft_manager.h"
+
 
 void initializeSenGodotModule(godot::ModuleInitializationLevel p_level) {
     if (p_level != godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
@@ -13,6 +15,8 @@ void initializeSenGodotModule(godot::ModuleInitializationLevel p_level) {
     }
 
     GDREGISTER_CLASS(godot::SenNode);
+    GDREGISTER_CLASS(AircraftManager);
+    GDREGISTER_CLASS(RootManager);
 }
 
 void uninitializeSenGodotModule(godot::ModuleInitializationLevel p_level) {

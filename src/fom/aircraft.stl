@@ -1,0 +1,8 @@
+package std_fom;
+
+class Aircraft
+{
+  var latitude  : f64;
+  var longitude : f64;
+  var altitude  : f32;
+}
