@@ -11,7 +11,7 @@
 #include <unordered_map>
 
 // generated code
-#include "fom/aircraft.stl.h"
+#include "rpr/rpr-physical_v2.0.xml.h"
 
 namespace godot
 {
@@ -36,7 +36,7 @@ private:
     godot::SenNode* senNode_;
     sen::Duration tickDuration_;
     std::unordered_map<std::string, std::shared_ptr<sen::ObjectSource>> sources_;
-    std::shared_ptr<sen::Subscription<std_fom::AircraftInterface>> aircraftSubscription_;
+    std::shared_ptr<sen::Subscription<rpr::AircraftInterface>> aircraftSubscription_;
     std::unordered_map<std::string, AircraftManager*> aircraftManagers_;
 };
 

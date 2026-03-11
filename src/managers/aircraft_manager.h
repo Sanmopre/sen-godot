@@ -2,7 +2,7 @@
 
 // godot
 #include "root_manager.h"
-#include "fom/aircraft.stl.h"
+#include "rpr/rpr-physical_v2.0.xml.h"
 
 class AircraftManager : public RootManager
 {
@@ -11,7 +11,7 @@ protected:
     static void _bind_methods(){}
 
 public:
-    using InterfaceType = std_fom::AircraftInterface;
+    using InterfaceType = rpr::AircraftInterface;
 
 public: // RootManager implementation
     void setInterface(sen::Object* interface) override;
