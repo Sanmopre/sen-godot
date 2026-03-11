@@ -30,9 +30,9 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/root_manager.h
 )
 
-add_sen_package(
-        TARGET std_fom
-        DESCRIPTION "Implements a simple class"
+sen_generate_cpp(
+        TARGET
+        ${PROJECT_NAME}
         STL_FILES
         src/fom/aircraft.stl
 )
@@ -43,7 +43,6 @@ target_link_libraries(${PROJECT_NAME}
     sen::core
     sen::kernel
     sen::util
-    std_fom
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

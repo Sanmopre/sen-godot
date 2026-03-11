@@ -2,7 +2,7 @@
 
 // godot
 #include "root_manager.h"
-#include "src/fom/aircraft.stl.h"
+#include "fom/aircraft.stl.h"
 
 class AircraftManager : public RootManager
 {
