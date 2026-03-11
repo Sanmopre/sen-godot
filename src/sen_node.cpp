@@ -8,8 +8,6 @@
 #include "godot_cpp/variant/utility_functions.hpp"
 #include <godot_cpp/classes/engine.hpp>
 
-#include "../cmake-build-debug/submodules/godot-cpp/gen/include/godot_cpp/classes/scene_tree.hpp"
-
 namespace godot
 {
 

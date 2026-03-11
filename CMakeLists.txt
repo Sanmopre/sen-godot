@@ -33,8 +33,14 @@ add_library(${PROJECT_NAME} SHARED
 sen_generate_cpp(
         TARGET
         ${PROJECT_NAME}
-        STL_FILES
-        src/fom/aircraft.stl
+        HLA_FOM_DIRS
+        /home/sanmopre/types/fom/rpr
+        /home/sanmopre/types/fom/netn
+        /home/sanmopre/types/fom/mapping
+        /home/sanmopre/types/fom/link16
+        /home/sanmopre/types/fom/base
+        HLA_MAPPINGS_FILE
+        /home/sanmopre/types/fom/mapping/mapping.xml
 )
 
 target_link_libraries(${PROJECT_NAME}

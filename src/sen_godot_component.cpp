@@ -17,10 +17,10 @@ sen::kernel::FuncResult SenGodotComponent::load(sen::kernel::LoadApi&& load_api)
 
 sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 {
-    api.getTypes().add(std_fom::AircraftInterface::meta());
+    api.getTypes().add(rpr::AircraftInterface::meta());
 
-    aircraftSubscription_ = api.selectAllFrom<std_fom::AircraftInterface>("test.bus");
-    std::ignore = aircraftSubscription_->list.onAdded([this](const sen::ObjectList<std_fom::AircraftInterface>::Iterators &objects)
+    aircraftSubscription_ = api.selectAllFrom<rpr::AircraftInterface>("test.bus");
+    std::ignore = aircraftSubscription_->list.onAdded([this](const sen::ObjectList<rpr::AircraftInterface>::Iterators &objects)
     {
         for (auto object = objects.typedBegin; object != objects.typedEnd; ++object)
         {
@@ -31,7 +31,7 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
         }
     });
 
-    std::ignore = aircraftSubscription_->list.onRemoved([this](const sen::ObjectList<std_fom::AircraftInterface>::Iterators &objects)
+    std::ignore = aircraftSubscription_->list.onRemoved([this](const sen::ObjectList<rpr::AircraftInterface>::Iterators &objects)
     {
         for (auto object = objects.typedBegin; object != objects.typedEnd; ++object)
         {
