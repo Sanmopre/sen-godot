@@ -11,7 +11,7 @@
 #include <unordered_map>
 
 // generated code
-#include "src/fom/aircraft.stl.h"
+#include "fom/aircraft.stl.h"
 
 namespace godot
 {
