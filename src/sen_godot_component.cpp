@@ -17,17 +17,27 @@ sen::kernel::FuncResult SenGodotComponent::load(sen::kernel::LoadApi&& load_api)
 
 sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 {
+    api.getTypes().add(std_fom::AircraftInterface::meta());
+
     aircraftSubscription_ = api.selectAllFrom<std_fom::AircraftInterface>("test.bus");
-    std::ignore = aircraftSubscription_->list.onAdded([this](const auto& iterator)
+    std::ignore = aircraftSubscription_->list.onAdded([this](const sen::ObjectList<std_fom::AircraftInterface>::Iterators &objects)
     {
-        auto* object = memnew(AircraftManager);
-        senNode_->addNode<AircraftManager>(object);
-        aircraftManagers_.try_emplace("babbui", object);
+        for (auto object = objects.typedBegin; object != objects.typedEnd; ++object)
+        {
+            auto* newInstance = memnew(AircraftManager);
+            newInstance->setInterface( dynamic_cast<sen::Object*>(*object));
+            senNode_->addNode<AircraftManager>(newInstance);
+            aircraftManagers_.try_emplace((*object)->asObject().getLocalName(), newInstance);
+        }
     });
 
-    std::ignore = aircraftSubscription_->list.onRemoved([this](const auto& iterator)
+    std::ignore = aircraftSubscription_->list.onRemoved([this](const sen::ObjectList<std_fom::AircraftInterface>::Iterators &objects)
     {
-
+        for (auto object = objects.typedBegin; object != objects.typedEnd; ++object)
+        {
+            aircraftManagers_.at((*object)->asObject().getLocalName())->queue_free();
+            aircraftManagers_.erase((*object)->asObject().getLocalName());
+        }
     });
 
     return Component::init(std::move(api));
