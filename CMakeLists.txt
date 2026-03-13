@@ -34,13 +34,12 @@ sen_generate_cpp(
         TARGET
         ${PROJECT_NAME}
         HLA_FOM_DIRS
-        /home/sanmopre/types/fom/rpr
-        /home/sanmopre/types/fom/netn
-        /home/sanmopre/types/fom/mapping
-        /home/sanmopre/types/fom/link16
-        /home/sanmopre/types/fom/base
+        "$ENV{STD_FOM_PATH}/fom/rpr"
+        "$ENV{STD_FOM_PATH}/fom/netn"
+        "$ENV{STD_FOM_PATH}/fom/mapping"
+        "$ENV{STD_FOM_PATH}/fom/link16"
         HLA_MAPPINGS_FILE
-        /home/sanmopre/types/fom/mapping/mapping.xml
+        "$ENV{STD_FOM_PATH}/fom/mapping/mapping.xml"
 )
 
 target_link_libraries(${PROJECT_NAME}

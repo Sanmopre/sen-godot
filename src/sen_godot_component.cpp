@@ -17,7 +17,9 @@ sen::kernel::FuncResult SenGodotComponent::load(sen::kernel::LoadApi&& load_api)
 
 sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 {
-    api.getTypes().add(rpr::AircraftInterface::meta());
+    //api.getTypes().add(rpr::AircraftInterface::meta());
+    // Windows only?
+    api.getTypes().add(rpr::AircraftInterface::meta().shared_from_this());
 
     aircraftSubscription_ = api.selectAllFrom<rpr::AircraftInterface>("test.bus");
     std::ignore = aircraftSubscription_->list.onAdded([this](const sen::ObjectList<rpr::AircraftInterface>::Iterators &objects)
