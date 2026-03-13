@@ -1,3 +1,5 @@
 [gd_scene format=3 uid="uid://dpt2dfe62v10o"]
 
 [node name="main" type="Node3D"]
+
+[node name="SenNode" type="SenNode" parent="."]
