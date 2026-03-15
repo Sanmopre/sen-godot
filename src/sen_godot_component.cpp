@@ -19,9 +19,8 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 {
 
 #ifdef _WIN32
-    api.getTypes().add(rpr::AircraftInterface::meta().shared_from_this());
+    api.getTypes().addc(rpr::AircraftInterface::meta().shared_from_this());
 #elif __linux__
-    api.getTypes().add(rpr::AircraftInterface::meta());
     api.getTypes().add(rpr::AircraftInterface::meta());
 #endif
 
@@ -30,10 +29,9 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
     {
         for (auto object = objects.typedBegin; object != objects.typedEnd; ++object)
         {
-            godot::UtilityFunctions::print("AIRCRAFT ADDED");
             auto* newInstance = memnew(AircraftManager);
             newInstance->setInterface( dynamic_cast<sen::Object*>(*object));
-            senNode_->addNode<AircraftManager>(newInstance);
+            senNode_->call_deferred("add_child", newInstance);
             aircraftManagers_.try_emplace((*object)->asObject().getLocalName(), newInstance);
         }
     });

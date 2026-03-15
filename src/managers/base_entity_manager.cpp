@@ -26,6 +26,6 @@ void BaseEntityManager::_ready()
 
     if (Node* model = scene->instantiate(); model != nullptr)
     {
-        add_child(model);
+        this->call_deferred("add_child", model);
     }
 }
