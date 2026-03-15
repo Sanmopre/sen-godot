@@ -20,7 +20,7 @@ void SenNode::_ready()
 {
     const auto millisecondsPerTick = static_cast<i64>(1000.0 / Engine::get_singleton()->get_physics_ticks_per_second());
     component_ = std::make_shared<SenGodotComponent>(this, std::chrono::milliseconds(millisecondsPerTick));
-    const auto bootLoader = sen::kernel::Bootloader::fromYamlString("", false);
+    const auto bootLoader = sen::kernel::Bootloader::fromYamlFile("/home/sanmopre/development/sen-godot/config/config.yaml", false);
 
     sen::kernel::ComponentContext component;
     component.instance = component_.get();

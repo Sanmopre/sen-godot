@@ -22,13 +22,15 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
     api.getTypes().add(rpr::AircraftInterface::meta().shared_from_this());
 #elif __linux__
     api.getTypes().add(rpr::AircraftInterface::meta());
+    api.getTypes().add(rpr::AircraftInterface::meta());
 #endif
 
-    aircraftSubscription_ = api.selectAllFrom<rpr::AircraftInterface>("test.bus");
-    std::ignore = aircraftSubscription_->list.onAdded([this](const sen::ObjectList<rpr::AircraftInterface>::Iterators &objects)
+    aircraftSubscription_ = api.selectAllFrom<rpr::AircraftInterface>("world.env");
+    const auto guard = aircraftSubscription_->list.onAdded([this](const sen::ObjectList<rpr::AircraftInterface>::Iterators &objects)
     {
         for (auto object = objects.typedBegin; object != objects.typedEnd; ++object)
         {
+            godot::UtilityFunctions::print("AIRCRAFT ADDED");
             auto* newInstance = memnew(AircraftManager);
             newInstance->setInterface( dynamic_cast<sen::Object*>(*object));
             senNode_->addNode<AircraftManager>(newInstance);

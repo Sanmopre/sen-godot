@@ -28,6 +28,13 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/aircraft_manager.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/aircraft_manager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/root_manager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/base_entity_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/base_entity_manager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/physical_entity_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/physical_entity_manager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/platform_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/platform_manager.h
 )
 
 sen_generate_cpp(

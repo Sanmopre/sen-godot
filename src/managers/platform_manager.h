@@ -1,32 +1,33 @@
 #pragma once
 
-#include "platform_manager.h"
+#include "physical_entity_manager.h"
 
-// godot
+// std_fom
 #include "rpr/rpr-physical_v2.0.xml.h"
 
-class AircraftManager : public PlatformManager
+class PlatformManager : public PhysicalEntityManager
 {
-    GDCLASS(AircraftManager, PlatformManager)
+    GDCLASS(PlatformManager, PhysicalEntityManager)
 protected:
     static void _bind_methods(){}
 
 public:
-    using InterfaceType = rpr::AircraftInterface;
+    using InterfaceType = rpr::PlatformInterface;
 
 public: // RootManager implementation
     void setInterface(sen::Object* interface) override
     {
         interface_ = dynamic_cast<InterfaceType*>(interface);
-        PlatformManager::setInterface(interface);
+        PhysicalEntityManager::setInterface(interface);
     }
 
 public: // godot::Node implementation
     //void _physics_process(double p_delta) override;
-   // void _enter_tree() override;
+    // void _enter_tree() override;
     //void _exit_tree() override;
-   // void _ready() override;
+    // void _ready() override;
 
 private:
     InterfaceType* interface_ = nullptr;
+    std::string entityType;
 };
