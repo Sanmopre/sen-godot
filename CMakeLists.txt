@@ -50,17 +50,33 @@ sen_generate_cpp(
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
     godot-cpp
     sen::core
     sen::kernel
     sen::util
 )
 
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        $<TARGET_PROPERTY:sen::core,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:sen::kernel,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:sen::util,INTERFACE_INCLUDE_DIRECTORIES>
+)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME "sen-godot"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/demo-project/bin"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/demo-project/bin"
+)
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+        -Wno-error
+        -Wno-unused-variable
+        -Wno-extra-semi
+        -Wno-pedantic
+        -Wno-double-promotion
+        -Wno-unused-parameter
 )
 
 if(MSVC)
