@@ -15,10 +15,10 @@ public:
     using InterfaceType = rpr::PlatformInterface;
 
 public: // RootManager implementation
-    void setInterface(sen::Object* interface) override
+    void setInterface(sen::Object* interface, sen::impl::WorkQueue* queue) override
     {
         interface_ = dynamic_cast<InterfaceType*>(interface);
-        PhysicalEntityManager::setInterface(interface);
+        PhysicalEntityManager::setInterface(interface, queue);
     }
 
 public: // godot::Node implementation

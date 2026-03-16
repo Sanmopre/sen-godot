@@ -17,20 +17,20 @@ sen::kernel::FuncResult SenGodotComponent::load(sen::kernel::LoadApi&& load_api)
 
 sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 {
-
 #ifdef _WIN32
     api.getTypes().addc(rpr::AircraftInterface::meta().shared_from_this());
 #elif __linux__
     api.getTypes().add(rpr::AircraftInterface::meta());
 #endif
 
-    aircraftSubscription_ = api.selectAllFrom<rpr::AircraftInterface>("world.env");
-    const auto guard = aircraftSubscription_->list.onAdded([this](const sen::ObjectList<rpr::AircraftInterface>::Iterators &objects)
+    aircraftSubscription_ = api.selectAllFrom<rpr::AircraftInterface>("ig.result");
+    std::ignore = aircraftSubscription_->list.onAdded([this, &api](const sen::ObjectList<rpr::AircraftInterface>::Iterators &objects)
     {
         for (auto object = objects.typedBegin; object != objects.typedEnd; ++object)
         {
             auto* newInstance = memnew(AircraftManager);
-            newInstance->setInterface( dynamic_cast<sen::Object*>(*object));
+            newInstance->setInterface( dynamic_cast<sen::Object*>(*object), api.getWorkQueue());
+            newInstance->set_name((*object)->asObject().getLocalName().c_str());
             senNode_->call_deferred("add_child", newInstance);
             aircraftManagers_.try_emplace((*object)->asObject().getLocalName(), newInstance);
         }

@@ -13,7 +13,7 @@ protected:
     static void _bind_methods(){}
 
 public:
-    virtual void setInterface(sen::Object* interface)
+    virtual void setInterface(sen::Object* interface, sen::impl::WorkQueue* queue)
     {
         object_ = interface;
     }
