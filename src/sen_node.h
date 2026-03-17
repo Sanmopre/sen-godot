@@ -10,6 +10,7 @@
 
 namespace godot
 {
+
 class SenNode : public Node
 {
     GDCLASS(SenNode, Node)
