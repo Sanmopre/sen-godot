@@ -25,9 +25,21 @@ public:
     void _ready() override;
     void _physics_process(double p_delta) override;
 
+public:
+    // Setters - Getters
+    void set_georeference_path(const godot::NodePath &path);
+    [[nodiscard]] NodePath get_georeference_path() const;
+
+public:
+    [[nodiscard]] godot::Vector3 getGeoreferenceEcefValue();
+
 private:
     std::shared_ptr<SenGodotComponent> component_;
     std::unique_ptr<sen::kernel::TestKernel> kernel_;
+
+private:
+    NodePath georeferencePath_;
+    Node* georeferenceNode_;
 };
 
 }

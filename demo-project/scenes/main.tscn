@@ -1,12 +1,25 @@
-[gd_scene format=3 uid="uid://dpt2dfe62v10o"]
+[gd_scene load_steps=2 format=3 uid="uid://dpt2dfe62v10o"]
 
-[ext_resource type="PackedScene" uid="uid://bthmhxa461p4f" path="res://assets/f18.glb" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://w4teeakmprnt" path="res://addons/cesium_godot/scripts/georeference_camera_controller.gd" id="1_o5qli"]
 
-[node name="main" type="Node3D" unique_id=1737978950]
+[node name="main" type="Node3D"]
 
-[node name="senNode" type="SenNode" parent="." unique_id=259572308]
+[node name="senNode" type="SenNode" parent="."]
+georeference_path = NodePath("../georeference")
 
-[node name="Sketchfab_Scene" parent="." unique_id=1256172402 instance=ExtResource("1_o5qli")]
+[node name="georeference" type="CesiumGeoreference" parent="."]
+ecefX = 4.85437e+06
+ecefY = -314258.0
+ecefZ = 4.11481e+06
+latitude = 40.417
+longitude = -3.704
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 
-[node name="camera" type="Camera3D" parent="." unique_id=2101590129]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -117.58554, 29.713339, 0)
+[node name="@Cesium3DTileset@22105" type="Cesium3DTileset" parent="georeference"]
+ion_asset_id = 2275207
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
+script = ExtResource("1_o5qli")
+globe_node = NodePath("../georeference")
+tilesets = [NodePath("../georeference/@Cesium3DTileset@22105")]

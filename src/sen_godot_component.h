@@ -21,7 +21,7 @@ namespace godot
 class SenGodotComponent : public sen::kernel::Component
 {
 public:
-    SenGodotComponent(godot::SenNode* senNode, const sen::Duration& tickDuration);
+    SenGodotComponent(godot::SenNode* senNode, godot::Node* georeferenceNode, const sen::Duration& tickDuration);
     ~SenGodotComponent() override = default;
 
     sen::kernel::FuncResult load(sen::kernel::LoadApi&&) override;
@@ -34,6 +34,7 @@ private:
 
 private:
     godot::SenNode* senNode_;
+    godot::Node* georeferenceNode_;
     sen::Duration tickDuration_;
     std::unordered_map<std::string, std::shared_ptr<sen::ObjectSource>> sources_;
     std::shared_ptr<sen::Subscription<rpr::AircraftInterface>> aircraftSubscription_;

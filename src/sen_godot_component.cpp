@@ -5,8 +5,8 @@
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "managers/aircraft_manager.h"
 
-SenGodotComponent::SenGodotComponent(godot::SenNode* senNode, const sen::Duration& tickDuration)
-    : senNode_(senNode), tickDuration_(tickDuration)
+SenGodotComponent::SenGodotComponent(godot::SenNode* senNode, godot::Node* georeferenceNode, const sen::Duration& tickDuration)
+    : senNode_(senNode), georeferenceNode_(georeferenceNode), tickDuration_(tickDuration)
 {
 }
 
@@ -60,6 +60,8 @@ sen::kernel::FuncResult SenGodotComponent::unload(sen::kernel::UnloadApi&& api)
 
 void SenGodotComponent::runImpl(sen::kernel::RunApi& api)
 {
-   //godot::UtilityFunctions::print("Seconds since component start: ", api.getTime().sinceEpoch().toSeconds());
+   // godot::UtilityFunctions::print("Seconds since component start: ", api.getTime().sinceEpoch().toSeconds());
+   // auto testValue = senNode_->getGeoreferenceEcefValue();
+   // godot::UtilityFunctions::print("x:", testValue.x, " y: ",testValue.y," z:", testValue.z);
 }
 

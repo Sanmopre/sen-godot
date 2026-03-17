@@ -13,13 +13,40 @@ namespace godot
 
 void SenNode::_physics_process(double p_delta)
 {
+    // auto testValue = getGeoreferenceEcefValue();
+    // UtilityFunctions::print("x:", testValue.x, " y: ",testValue.y," z:", testValue.z);
     kernel_->step();
+}
+
+void SenNode::set_georeference_path(const godot::NodePath& path)
+{
+    georeferencePath_ = path;
+}
+
+NodePath SenNode::get_georeference_path() const
+{
+    return georeferencePath_;
+}
+
+godot::Vector3 SenNode::getGeoreferenceEcefValue()
+{
+    const auto x =  (double)georeferenceNode_->get("ecefX");
+    const auto y =  (double)georeferenceNode_->get("ecefY");
+    const auto z =  (double)georeferenceNode_->get("ecefZ");
+
+    return Vector3(x, y, z);
 }
 
 void SenNode::_ready()
 {
+    georeferenceNode_ = get_node_or_null(georeferencePath_);
+    if (!georeferenceNode_)
+    {
+        UtilityFunctions::push_error("Georeference node not set");
+    }
+
     const auto millisecondsPerTick = static_cast<i64>(1000.0 / Engine::get_singleton()->get_physics_ticks_per_second());
-    component_ = std::make_shared<SenGodotComponent>(this, std::chrono::milliseconds(millisecondsPerTick));
+    component_ = std::make_shared<SenGodotComponent>(this, georeferenceNode_, std::chrono::milliseconds(millisecondsPerTick));
     const auto bootLoader = sen::kernel::Bootloader::fromYamlFile("/home/sanmopre/development/sen-godot/config/config.yaml", false);
 
     sen::kernel::ComponentContext component;
@@ -61,6 +88,14 @@ void SenNode::_ready()
 
 void SenNode::_bind_methods()
 {
+    godot::ClassDB::bind_method(godot::D_METHOD("set_georeference_path", "path"), &SenNode::set_georeference_path);
+    godot::ClassDB::bind_method(godot::D_METHOD("get_georeference_path"), &SenNode::get_georeference_path);
+
+    ADD_PROPERTY(
+        godot::PropertyInfo(godot::Variant::NODE_PATH, "georeference_path"),
+        "set_georeference_path",
+        "get_georeference_path"
+    );
 }
 
 }
