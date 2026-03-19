@@ -32,6 +32,7 @@ public:
 
 public:
     [[nodiscard]] godot::Vector3 getGeoreferenceEcefValue();
+    [[nodiscard]] Node* getGeoreferenceNode() const noexcept;
 
 private:
     std::shared_ptr<SenGodotComponent> component_;

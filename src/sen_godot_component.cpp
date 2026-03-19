@@ -31,7 +31,7 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
             auto* newInstance = memnew(AircraftManager);
             newInstance->setInterface( dynamic_cast<sen::Object*>(*object), api.getWorkQueue());
             newInstance->set_name((*object)->asObject().getLocalName().c_str());
-            senNode_->call_deferred("add_child", newInstance);
+            senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
             aircraftManagers_.try_emplace((*object)->asObject().getLocalName(), newInstance);
         }
     });
@@ -60,8 +60,10 @@ sen::kernel::FuncResult SenGodotComponent::unload(sen::kernel::UnloadApi&& api)
 
 void SenGodotComponent::runImpl(sen::kernel::RunApi& api)
 {
-   // godot::UtilityFunctions::print("Seconds since component start: ", api.getTime().sinceEpoch().toSeconds());
-   // auto testValue = senNode_->getGeoreferenceEcefValue();
-   // godot::UtilityFunctions::print("x:", testValue.x, " y: ",testValue.y," z:", testValue.z);
+    for (const auto& [name, manager] : aircraftManagers_)
+    {
+        manager->setNewGeoreference(senNode_->getGeoreferenceEcefValue());
+        manager->componentUpdate(&api);
+    }
 }
 

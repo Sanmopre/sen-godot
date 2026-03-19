@@ -37,6 +37,11 @@ godot::Vector3 SenNode::getGeoreferenceEcefValue()
     return Vector3(x, y, z);
 }
 
+Node* SenNode::getGeoreferenceNode() const noexcept
+{
+    return georeferenceNode_;
+}
+
 void SenNode::_ready()
 {
     georeferenceNode_ = get_node_or_null(georeferencePath_);

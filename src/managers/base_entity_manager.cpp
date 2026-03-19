@@ -5,11 +5,15 @@
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/core/class_db.hpp>
+#include <sen/kernel/component_api.h>
 
 
 void BaseEntityManager::setInterface(sen::Object* interface, sen::impl::WorkQueue* queue)
 {
     interface_ = dynamic_cast<InterfaceType*>(interface);
+    sen::util::DrConfig drConfig;
+    drConfig.smoothing = true;
+    deadReckoner_ = std::make_unique<sen::util::DeadReckoner<InterfaceType>>(*interface_, drConfig);
     entityType = toString(interface_->getEntityType());
 
     // guards_.emplace_back(interface_->onSpatialChanged({queue, []()
@@ -18,6 +22,28 @@ void BaseEntityManager::setInterface(sen::Object* interface, sen::impl::WorkQueu
     // }}));
 
     RootManager::setInterface(interface, queue);
+}
+
+void BaseEntityManager::setNewGeoreference(const godot::Vector3& georeference)
+{
+    georeference_ = georeference;
+}
+
+void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
+{
+    if (!interface_)
+    {
+        godot::UtilityFunctions::push_error("BaseEntityManager: invalid interface cast");
+        return;
+    }
+
+    const auto situation = deadReckoner_->situation(api->getTime());
+    const godot::Vector3 ecefOrientation{-situation.orientation.phi, -situation.orientation.theta, situation.orientation.psi};
+    const godot::Vector3 ecefLocation {static_cast<float>(situation.worldLocation.x.get()), static_cast<float>(situation.worldLocation.y.get()), static_cast<float>(situation.worldLocation.z.get())};
+    const auto finalRelativePosition = ecefLocation - georeference_;
+
+    this->call_deferred("set_position", finalRelativePosition);
+    this->call_deferred("set_rotation", ecefOrientation);
 }
 
 void BaseEntityManager::_ready()
@@ -32,19 +58,12 @@ void BaseEntityManager::_ready()
     if (Node* model = scene->instantiate(); model != nullptr)
     {
         model->set_name("model");
+        // Make the model rotation offset configurable
+        godot::Object::cast_to<godot::Node3D>(model)->call_deferred("set_rotation", godot::Vector3{-90.0f, 0.0f, 90.0f});
         this->call_deferred("add_child", model);
     }
 }
 
 void BaseEntityManager::_physics_process(double p_delta)
 {
-    if (!interface_)
-    {
-        godot::UtilityFunctions::push_error("BaseEntityManager: invalid interface cast");
-        return;
-    }
-
-    std::ignore = interface_->getSpatial();
-
-    RootManager::_physics_process(p_delta);
 }

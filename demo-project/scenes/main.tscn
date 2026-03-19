@@ -13,6 +13,7 @@ ecefY = -314258.0
 ecefZ = 4.11481e+06
 latitude = 40.417
 longitude = -3.704
+altitude = 2254.67
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 
 [node name="@Cesium3DTileset@22105" type="Cesium3DTileset" parent="georeference"]
