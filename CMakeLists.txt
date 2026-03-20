@@ -9,11 +9,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 list(APPEND CMAKE_PREFIX_PATH "$ENV{SEN_PATH}/cmake")
 find_package(sen REQUIRED)
 
+
+set(GODOTCPP_TARGET editor CACHE STRING "Godot build target")
+set(GODOTCPP_PRECISION double CACHE STRING "Godot precision")
+set(GODOTCPP_CUSTOM_API_FILE "/home/sanmopre/development/godot-versions/godot/bin/extension_api.json" CACHE FILEPATH "Godot custom extension API file")
+
 if(NOT DEFINED GODOTCPP_TARGET)
     set(GODOTCPP_TARGET template_release CACHE STRING "Godot build target")
 endif()
 
 option(GODOTCPP_USE_HOT_RELOAD "Enable hot reload support" ON)
+
 
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/submodules/godot-cpp)

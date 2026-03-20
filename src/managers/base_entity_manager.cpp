@@ -38,12 +38,17 @@ void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
     }
 
     const auto situation = deadReckoner_->situation(api->getTime());
-    const godot::Vector3 ecefOrientation{-situation.orientation.phi, -situation.orientation.theta, situation.orientation.psi};
-    const godot::Vector3 ecefLocation {static_cast<float>(situation.worldLocation.x.get()), static_cast<float>(situation.worldLocation.y.get()), static_cast<float>(situation.worldLocation.z.get())};
+    //const godot::Vector3 ecefOrientation{-situation.orientation.phi, -situation.orientation.theta, situation.orientation.psi};
+    const godot::Vector3 ecefLocation {situation.worldLocation.x.get(), situation.worldLocation.y.get(), situation.worldLocation.z.get()};
     const auto finalRelativePosition = ecefLocation - georeference_;
 
-    this->call_deferred("set_position", finalRelativePosition);
-    this->call_deferred("set_rotation", ecefOrientation);
+    this->call_deferred("set_position", ecefLocation);
+    this->call_deferred(
+        "look_at",
+        godot::Vector3(0.0, 0.0, 0.0),
+        godot::Vector3(0.0, 1.0, 0.0)
+    );
+    //this->call_deferred("set_rotation", ecefOrientation);
 }
 
 void BaseEntityManager::_ready()
@@ -59,7 +64,7 @@ void BaseEntityManager::_ready()
     {
         model->set_name("model");
         // Make the model rotation offset configurable
-        godot::Object::cast_to<godot::Node3D>(model)->call_deferred("set_rotation", godot::Vector3{-90.0f, 0.0f, 90.0f});
+        //godot::Object::cast_to<godot::Node3D>(model)->call_deferred("set_rotation", godot::Vector3{-90.0f, 0.0f, 90.0f});
         this->call_deferred("add_child", model);
     }
 }
