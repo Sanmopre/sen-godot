@@ -11,7 +11,7 @@ find_package(sen REQUIRED)
 
 set(GODOTCPP_TARGET editor CACHE STRING "Godot build target")
 set(GODOTCPP_PRECISION double CACHE STRING "Godot precision")
-set(GODOTCPP_CUSTOM_API_FILE "/home/sanmopre/development/godot-versions/godot/bin/extension_api.json" CACHE FILEPATH "Godot custom extension API file")
+set(GODOTCPP_CUSTOM_API_FILE $ENV{GODOT_API_JSON} CACHE FILEPATH "Godot custom extension API file")
 set(GODOTCPP_TARGET template_release CACHE STRING "Godot build target")
 option(GODOTCPP_USE_HOT_RELOAD "Enable hot reload support" ON)
 

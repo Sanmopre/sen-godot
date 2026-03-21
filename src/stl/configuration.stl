@@ -2,6 +2,7 @@ package configuration;
 
 enum Model : u32
 {
+  defaultModel,
   f18,
   a400
 }

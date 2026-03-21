@@ -23,6 +23,9 @@ origin_type = 1
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, 1, 0, -1, 6.12323e-17, 0, 0, 0)
 
 [node name="Google Photorealistic 3D Tiles" type="Cesium3DTileset" parent="georeference"]
+maximum_screen_space_error = 25.0
+maximum_simultaneous_tile_loads = 30
+forbid_holes = true
 ion_asset_id = 2275207
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0.331456, 1.02806, -0.359025)
 
