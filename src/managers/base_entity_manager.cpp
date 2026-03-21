@@ -29,11 +29,6 @@ void BaseEntityManager::setInterface(sen::Object* interface, sen::impl::WorkQueu
     RootManager::setInterface(interface, queue);
 }
 
-void BaseEntityManager::setNewGeoreference(const godot::Vector3& georeference)
-{
-    georeference_ = georeference;
-}
-
 void BaseEntityManager::align_belly_to_origin()
 {
     const godot::Vector3 toCenter = (godot::Vector3(0, 0, 0) - get_global_position()).normalized();
@@ -94,7 +89,7 @@ void BaseEntityManager::_ready()
     pivot_.roll->set_name("roll_pivot");
     pivot_.pitch->call_deferred("add_child", pivot_.roll);
 
-    const godot::Ref<godot::PackedScene> scene = godot::ResourceLoader::get_singleton()->load("res://assets/f18.glb");
+    const godot::Ref<godot::PackedScene> scene = godot::ResourceLoader::get_singleton()->load("res://assets/f18/f18.glb");
     if (!scene.is_valid())
     {
         godot::UtilityFunctions::push_error("Error loading resource");

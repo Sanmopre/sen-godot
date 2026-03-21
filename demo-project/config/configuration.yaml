@@ -1,0 +1,3 @@
+inputQueries:
+  - SELECT * FROM ig.result
+modelMappings:

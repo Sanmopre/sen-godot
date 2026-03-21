@@ -6,7 +6,8 @@
 
 // godot
 #include "godot_cpp/variant/utility_functions.hpp"
-#include <godot_cpp/classes/engine.hpp>
+#include "godot_cpp/classes/engine.hpp"
+#include "godot_cpp/classes/project_settings.hpp"
 
 namespace godot
 {
@@ -52,7 +53,9 @@ void SenNode::_ready()
 
     const auto millisecondsPerTick = static_cast<i64>(1000.0 / Engine::get_singleton()->get_physics_ticks_per_second());
     component_ = std::make_shared<SenGodotComponent>(this, georeferenceNode_, std::chrono::milliseconds(millisecondsPerTick));
-    const auto bootLoader = sen::kernel::Bootloader::fromYamlFile("/home/sanmopre/development/sen-godot/config/config.yaml", false);
+
+    const auto bootConfigGlobalPath = godot::ProjectSettings::get_singleton()->globalize_path("res://config/boot.yaml");
+    const auto bootLoader = sen::kernel::Bootloader::fromYamlFile(bootConfigGlobalPath.utf8().get_data(), false);
 
     sen::kernel::ComponentContext component;
     component.instance = component_.get();

@@ -26,7 +26,6 @@ public:
 
 public: // RootManager implementation
     void setInterface(sen::Object* interface, sen::impl::WorkQueue* queue) override;
-    void setNewGeoreference(const godot::Vector3& georeference);
 
 public:
     void componentUpdate(sen::kernel::RunApi* api) override;
@@ -41,7 +40,6 @@ private:
     InterfaceType* interface_ = nullptr;
     Node* model_ = nullptr;
     Pivot pivot_;
-    godot::Vector3 georeference_;
     std::vector<sen::ConnectionGuard> guards_;
     std::unique_ptr<sen::util::DeadReckoner<InterfaceType>> deadReckoner_;
     std::string entityType;
