@@ -1,6 +1,8 @@
 #include "sen_godot_component.h"
 
 // godot
+#include <sen/kernel/bootloader.h>
+
 #include "sen_node.h"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "managers/aircraft_manager.h"
@@ -18,9 +20,13 @@ sen::kernel::FuncResult SenGodotComponent::load(sen::kernel::LoadApi&& load_api)
 sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 {
 #ifdef _WIN32
-    api.getTypes().addc(rpr::AircraftInterface::meta().shared_from_this());
+    api.getTypes().add(rpr::AircraftInterface::meta().shared_from_this());
+    api.getTypes().add(rpr::MunitionInterface::meta().shared_from_this());
+    api.getTypes().add(rpr::ExpendablesInterface::meta().shared_from_this());
 #elif __linux__
     api.getTypes().add(rpr::AircraftInterface::meta());
+    api.getTypes().add(rpr::MunitionInterface::meta());
+    api.getTypes().add(rpr::ExpendablesInterface::meta());
 #endif
 
     aircraftSubscription_ = api.selectAllFrom<rpr::AircraftInterface>("ig.result");

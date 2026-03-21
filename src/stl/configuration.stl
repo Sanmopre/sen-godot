@@ -1,0 +1,23 @@
+package configuration;
+
+enum Model : u32
+{
+  f18,
+  a400
+}
+
+sequence<string> StringList;
+
+struct ModelMapping
+{
+  disTypes : StringList,
+  model    : Model
+}
+
+sequence<ModelMapping> ModelMappingList;
+
+class EngineConfiguration
+{
+  var inputQueries  : StringList       [static];
+  var modelMappings : ModelMappingList [static];
+}

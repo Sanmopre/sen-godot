@@ -1,14 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://dpt2dfe62v10o"]
+[gd_scene load_steps=3 format=3 uid="uid://dpt2dfe62v10o"]
 
 [ext_resource type="Script" uid="uid://bqo1aj72rhnti" path="res://addons/cesium_godot/scripts/camera_controllers/CesiumDynamicCamera.gd" id="1_o5qli"]
+
+[sub_resource type="Environment" id="Environment_o5qli"]
 
 [node name="main" type="Node3D"]
 
 [node name="senNode" type="SenNode" parent="."]
 georeference_path = NodePath("../georeference")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.930418, 0.366501, 0, -0.366501, 0.930418, 0, 0, 0)
+[node name="light" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.942642, 0.333807, 0, -0.333807, -0.942642, 0, 0, 0)
 
 [node name="georeference" type="CesiumGeoreference" parent="."]
 ecefX = 4.84959e+06
@@ -22,10 +24,11 @@ transform = Transform3D(1, 0, 0, 0, 6.12323e-17, 1, 0, -1, 6.12323e-17, 0, 0, 0)
 
 [node name="Google Photorealistic 3D Tiles" type="Cesium3DTileset" parent="georeference"]
 ion_asset_id = 2275207
-show_hierarchy = true
-transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0.331456, 1.02806, -0.359025)
 
-[node name="CesiumDynamicCam" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
+[node name="cesiumCamera" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
+environment = SubResource("Environment_o5qli")
+fov = 37.8493
 script = ExtResource("1_o5qli")
 globe_node = NodePath("../georeference")
 tilesets = [NodePath("../georeference/Google Photorealistic 3D Tiles")]

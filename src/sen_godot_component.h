@@ -12,6 +12,8 @@
 
 // generated code
 #include "rpr/rpr-physical_v2.0.xml.h"
+#include "configuration.stl.h"
+
 
 namespace godot
 {
@@ -34,6 +36,7 @@ private:
 
 private:
     godot::SenNode* senNode_;
+    std::shared_ptr<configuration::EngineConfigurationBase> engineConfiguration_;
     godot::Node* georeferenceNode_;
     sen::Duration tickDuration_;
     std::unordered_map<std::string, std::shared_ptr<sen::ObjectSource>> sources_;
