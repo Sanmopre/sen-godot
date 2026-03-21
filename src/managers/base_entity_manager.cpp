@@ -8,6 +8,11 @@
 #include <sen/kernel/component_api.h>
 
 
+void BaseEntityManager::_bind_methods()
+{
+    godot::ClassDB::bind_method(godot::D_METHOD("align_belly_to_origin"), &BaseEntityManager::align_belly_to_origin);
+}
+
 void BaseEntityManager::setInterface(sen::Object* interface, sen::impl::WorkQueue* queue)
 {
     interface_ = dynamic_cast<InterfaceType*>(interface);
@@ -29,6 +34,26 @@ void BaseEntityManager::setNewGeoreference(const godot::Vector3& georeference)
     georeference_ = georeference;
 }
 
+void BaseEntityManager::align_belly_to_origin()
+{
+    const godot::Vector3 toCenter = (godot::Vector3(0, 0, 0) - get_global_position()).normalized();
+    if (toCenter.length_squared() < 1e-12) {
+        return;
+    }
+
+    const godot::Vector3 up = -toCenter;
+    godot::Vector3 ref_forward(0, 0, -1);
+
+    if (godot::Math::abs(up.dot(ref_forward)) > 0.99) {
+        ref_forward = godot::Vector3(1, 0, 0);
+    }
+
+    const godot::Vector3 right = up.cross(ref_forward).normalized();
+    const godot::Vector3 forward = right.cross(up).normalized();
+
+    set_global_basis(godot::Basis(right, up, -forward));
+}
+
 void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
 {
     if (!interface_)
@@ -37,22 +62,38 @@ void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
         return;
     }
 
+    // Set the ECEF position of the entity (Currently working when georeference node is set to true origin)
     const auto situation = deadReckoner_->situation(api->getTime());
-    //const godot::Vector3 ecefOrientation{-situation.orientation.phi, -situation.orientation.theta, situation.orientation.psi};
     const godot::Vector3 ecefLocation {situation.worldLocation.x.get(), situation.worldLocation.y.get(), situation.worldLocation.z.get()};
-    const auto finalRelativePosition = ecefLocation - georeference_;
-
     this->call_deferred("set_position", ecefLocation);
-    this->call_deferred(
-        "look_at",
-        godot::Vector3(0.0, 0.0, 0.0),
-        godot::Vector3(0.0, 1.0, 0.0)
-    );
-    //this->call_deferred("set_rotation", ecefOrientation);
+
+    // Set the orientation of the aircraft setting all the euler pivots
+    if (model_ && pivot_.yaw && pivot_.pitch && pivot_.roll)
+    {
+        const auto geodeticSituation = deadReckoner_->geodeticSituation(api->getTime());
+        pivot_.yaw->call_deferred("set_rotation", godot::Vector3(0.0, geodeticSituation.orientation.psi, 0.0));
+        pivot_.pitch->call_deferred("set_rotation", godot::Vector3(0.0, 0.0, geodeticSituation.orientation.theta));
+        pivot_.roll->call_deferred("set_rotation", godot::Vector3(-geodeticSituation.orientation.phi, 0.0, 0.0));
+    }
+
+    // Make the entity have the belly point toward the center of the earth
+    call_deferred("align_belly_to_origin");
 }
 
 void BaseEntityManager::_ready()
 {
+    pivot_.yaw = memnew(Node3D);
+    pivot_.yaw->set_name("yaw_pivot");
+    this->call_deferred("add_child", pivot_.yaw);
+
+    pivot_.pitch = memnew(Node3D);
+    pivot_.pitch->set_name("pitch_pivot");
+    pivot_.yaw->call_deferred("add_child", pivot_.pitch);
+
+    pivot_.roll = memnew(Node3D);
+    pivot_.roll->set_name("roll_pivot");
+    pivot_.pitch->call_deferred("add_child", pivot_.roll);
+
     const godot::Ref<godot::PackedScene> scene = godot::ResourceLoader::get_singleton()->load("res://assets/f18.glb");
     if (!scene.is_valid())
     {
@@ -60,15 +101,9 @@ void BaseEntityManager::_ready()
         return;
     }
 
-    if (Node* model = scene->instantiate(); model != nullptr)
+    if (model_ = scene->instantiate(); model_ != nullptr)
     {
-        model->set_name("model");
-        // Make the model rotation offset configurable
-        //godot::Object::cast_to<godot::Node3D>(model)->call_deferred("set_rotation", godot::Vector3{-90.0f, 0.0f, 90.0f});
-        this->call_deferred("add_child", model);
+        model_->set_name("model");
+        pivot_.roll->call_deferred("add_child", model_);
     }
-}
-
-void BaseEntityManager::_physics_process(double p_delta)
-{
 }
