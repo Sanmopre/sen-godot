@@ -36,6 +36,8 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/platform_manager.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/expendable_manager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/expendable_manager.h
+        src/managers/munition_manager.cpp
+        src/managers/munition_manager.h
 )
 
 # Add std fom

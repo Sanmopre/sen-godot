@@ -3,4 +3,4 @@
 [ext_resource type="PackedScene" uid="uid://bthmhxa461p4f" path="res://assets/f18/f18.glb" id="1_sgkgn"]
 
 [node name="Sketchfab_Scene" instance=ExtResource("1_sgkgn")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, -3.6733)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.6733)

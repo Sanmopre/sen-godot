@@ -4,7 +4,11 @@ enum Model : u32
 {
   defaultModel,
   f18,
-  a400
+  a400,
+  chaff,
+  flare,
+  c17,
+  aim9
 }
 
 sequence<string> StringList;

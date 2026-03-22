@@ -84,6 +84,7 @@ void BaseEntityManager::_ready()
     pivot_.pitch->call_deferred("add_child", pivot_.roll);
 
     const auto modelPath = getModelPath(getModel(interface_->getEntityType(),getConfig()->engineConfiguration_->getModelMappings()));
+
     const godot::Ref<godot::PackedScene> scene = godot::ResourceLoader::get_singleton()->load(modelPath.data());
     if (!scene.is_valid())
     {

@@ -2,12 +2,12 @@
 #include "sen_node.h"
 #include "managers/aircraft_manager.h"
 #include "managers/expendable_manager.h"
+#include "managers/munition_manager.h"
 
 // godot
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
-
 
 void initializeSenGodotModule(godot::ModuleInitializationLevel p_level) {
     if (p_level != godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
@@ -18,6 +18,7 @@ void initializeSenGodotModule(godot::ModuleInitializationLevel p_level) {
     GDREGISTER_CLASS(RootManager);
     GDREGISTER_CLASS(BaseEntityManager);
     GDREGISTER_CLASS(PhysicalEntityManager);
+    GDREGISTER_CLASS(MunitionManager);
     GDREGISTER_CLASS(ExpendableManager);
     GDREGISTER_CLASS(PlatformManager);
     GDREGISTER_CLASS(AircraftManager);

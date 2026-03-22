@@ -38,12 +38,20 @@
     switch (model)
     {
     case configuration::Model::defaultModel:
-        return "res://assets/f18/f18.glb";
+        return "res://assets/f18/f18.tscn";
     case configuration::Model::a400:
-        return "res://assets/f18/f18.glb";
+        return "res://assets/f18/f18.tscn";
     case configuration::Model::f18:
-        return "res://assets/f18/f18.glb";
+        return "res://assets/f18/f18.tscn";
+    case configuration::Model::chaff:
+        return "res://assets/chaff/chaff.tscn";
+    case configuration::Model::flare:
+        return "res://assets/chaff/chaff.tscn";
+    case configuration::Model::c17:
+        return "res://assets/c-17/c-17.tscn";
+    case configuration::Model::aim9:
+        return "res://assets/aim-9/aim-9.tscn";
     default:
-        return "res://assets/f18/f18.glb";
+        return "res://assets/f18/f18.tscn";
     }
 }

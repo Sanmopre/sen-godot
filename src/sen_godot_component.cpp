@@ -9,6 +9,8 @@
 #include "managers/aircraft_manager.h"
 
 // sen
+#include "managers/expendable_manager.h"
+#include "managers/munition_manager.h"
 #include "sen/core/meta/class_type.h"
 
 SenGodotComponent::SenGodotComponent(godot::SenNode* senNode, godot::Node* georeferenceNode, const sen::Duration& tickDuration)
@@ -40,7 +42,8 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
 
     config_.workQueue_ = api.getWorkQueue();
     const auto configGlobalPath = godot::ProjectSettings::get_singleton()->globalize_path("res://config/configuration.yaml");
-    config_.engineConfiguration_ = std::make_shared<configuration::EngineConfigurationBase>("engine_config", sen::kernel::getConfigAsVarFromYaml(configGlobalPath.utf8().get_data(), false));
+    const auto varMap = sen::kernel::getConfigAsVarFromYaml(configGlobalPath.utf8().get_data(), false);
+    config_.engineConfiguration_ = std::make_shared<configuration::EngineConfigurationBase>("engine_config", varMap);
     subscribeToQueries(api);
     return Component::init(std::move(api));
 }
@@ -111,6 +114,22 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
     if (object->getClass()->isSameOrInheritsFrom(*rpr::AircraftInterface::meta().type()))
     {
         auto* newInstance = memnew(AircraftManager);
+        newInstance->setInterface( object, &config_);
+        newInstance->set_name(object->getLocalName().c_str());
+        senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
+    }
+    else if (object->getClass()->isSameOrInheritsFrom(*rpr::ExpendablesInterface::meta().type()))
+    {
+        auto* newInstance = memnew(ExpendableManager);
+        newInstance->setInterface( object, &config_);
+        newInstance->set_name(object->getLocalName().c_str());
+        senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
+    }
+    else if (object->getClass()->isSameOrInheritsFrom(*rpr::MunitionInterface::meta().type()))
+    {
+        auto* newInstance = memnew(MunitionManager);
         newInstance->setInterface( object, &config_);
         newInstance->set_name(object->getLocalName().c_str());
         senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
