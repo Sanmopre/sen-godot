@@ -25,7 +25,7 @@ public:
     using InterfaceType = rpr::BaseEntityInterface;
 
 public: // RootManager implementation
-    void setInterface(sen::Object* interface, sen::impl::WorkQueue* queue) override;
+    void setInterface(sen::Object* interface, ComponentConfiguration* config) override;
 
 public:
     void componentUpdate(sen::kernel::RunApi* api) override;

@@ -13,20 +13,14 @@ void BaseEntityManager::_bind_methods()
     godot::ClassDB::bind_method(godot::D_METHOD("align_belly_to_origin"), &BaseEntityManager::align_belly_to_origin);
 }
 
-void BaseEntityManager::setInterface(sen::Object* interface, sen::impl::WorkQueue* queue)
+void BaseEntityManager::setInterface(sen::Object* interface, ComponentConfiguration* config)
 {
     interface_ = dynamic_cast<InterfaceType*>(interface);
     sen::util::DrConfig drConfig;
     drConfig.smoothing = true;
     deadReckoner_ = std::make_unique<sen::util::DeadReckoner<InterfaceType>>(*interface_, drConfig);
-    entityType = toString(interface_->getEntityType());
 
-    // guards_.emplace_back(interface_->onSpatialChanged({queue, []()
-    // {
-    //     godot::UtilityFunctions::print("Position changed!");
-    // }}));
-
-    RootManager::setInterface(interface, queue);
+    RootManager::setInterface(interface, config);
 }
 
 void BaseEntityManager::align_belly_to_origin()
@@ -89,10 +83,11 @@ void BaseEntityManager::_ready()
     pivot_.roll->set_name("roll_pivot");
     pivot_.pitch->call_deferred("add_child", pivot_.roll);
 
-    const godot::Ref<godot::PackedScene> scene = godot::ResourceLoader::get_singleton()->load("res://assets/f18/f18.glb");
+    const auto modelPath = getModelPath(getModel(interface_->getEntityType(),getConfig()->engineConfiguration_->getModelMappings()));
+    const godot::Ref<godot::PackedScene> scene = godot::ResourceLoader::get_singleton()->load(modelPath.data());
     if (!scene.is_valid())
     {
-        godot::UtilityFunctions::push_error("Error loading resource");
+        godot::UtilityFunctions::push_error("Error loading ", modelPath.data());
         return;
     }
 

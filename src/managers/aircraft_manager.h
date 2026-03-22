@@ -15,10 +15,10 @@ public:
     using InterfaceType = rpr::AircraftInterface;
 
 public: // RootManager implementation
-    void setInterface(sen::Object* interface, sen::impl::WorkQueue* queue) override
+    void setInterface(sen::Object* interface, ComponentConfiguration* config) override
     {
         interface_ = dynamic_cast<InterfaceType*>(interface);
-        PlatformManager::setInterface(interface, queue);
+        PlatformManager::setInterface(interface, config);
     }
 
 public: // godot::Node implementation

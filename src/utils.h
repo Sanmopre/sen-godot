@@ -29,6 +29,7 @@
         }
     }
 
+    godot::UtilityFunctions::push_warning("Entity with dis type ", typeString.data(), " not mapped to any model");
     return configuration::Model::defaultModel;
 }
 
@@ -37,13 +38,12 @@
     switch (model)
     {
     case configuration::Model::defaultModel:
-        return "";
+        return "res://assets/f18/f18.glb";
     case configuration::Model::a400:
-        return "a400";
+        return "res://assets/f18/f18.glb";
     case configuration::Model::f18:
-        return "f18";
+        return "res://assets/f18/f18.glb";
     default:
-        return "";
+        return "res://assets/f18/f18.glb";
     }
-    return "";
 }

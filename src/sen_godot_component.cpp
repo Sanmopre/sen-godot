@@ -38,9 +38,9 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
     api.getTypes().add(rpr::ExpendablesInterface::meta());
 #endif
 
-    workQueue_ = api.getWorkQueue();
+    config_.workQueue_ = api.getWorkQueue();
     const auto configGlobalPath = godot::ProjectSettings::get_singleton()->globalize_path("res://config/configuration.yaml");
-    engineConfiguration_ = std::make_shared<configuration::EngineConfigurationBase>("engine_config", sen::kernel::getConfigAsVarFromYaml(configGlobalPath.utf8().get_data(), false));
+    config_.engineConfiguration_ = std::make_shared<configuration::EngineConfigurationBase>("engine_config", sen::kernel::getConfigAsVarFromYaml(configGlobalPath.utf8().get_data(), false));
     subscribeToQueries(api);
     return Component::init(std::move(api));
 }
@@ -66,7 +66,7 @@ void SenGodotComponent::runImpl(sen::kernel::RunApi& api)
 void SenGodotComponent::subscribeToQueries(sen::kernel::InitApi& api)
 {
     std::vector<std::shared_ptr<sen::Interest>> interests;
-    const auto& inputQueries = engineConfiguration_->getInputQueries();
+    const auto& inputQueries = config_.engineConfiguration_->getInputQueries();
     interests.reserve(inputQueries.size());
 
     for (const auto& query : inputQueries)
@@ -111,12 +111,11 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
     if (object->getClass()->isSameOrInheritsFrom(*rpr::AircraftInterface::meta().type()))
     {
         auto* newInstance = memnew(AircraftManager);
-        newInstance->setInterface( object, workQueue_);
+        newInstance->setInterface( object, &config_);
         newInstance->set_name(object->getLocalName().c_str());
         senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
     }
-
 }
 
 void SenGodotComponent::onObjectRemoved(sen::Object* object)
