@@ -15,12 +15,12 @@
 
 SenGodotComponent::SenGodotComponent(godot::SenNode* senNode, godot::Node* georeferenceNode, const sen::Duration& tickDuration)
     :
-    senNode_(senNode)
-    , georeferenceNode_(georeferenceNode)
+      georeferenceNode_(georeferenceNode)
     , tickDuration_(tickDuration)
     , trackedObjects_(std::make_unique<sen::ObjectList<sen::Object>>())
-    ,mux_(std::make_unique<sen::ObjectMux>())
+    , mux_(std::make_unique<sen::ObjectMux>())
 {
+    config_.senNode_ = senNode;
 }
 
 sen::kernel::FuncResult SenGodotComponent::load(sen::kernel::LoadApi&& load_api)
@@ -116,7 +116,7 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
         auto* newInstance = memnew(AircraftManager);
         newInstance->setInterface( object, &config_);
         newInstance->set_name(object->getLocalName().c_str());
-        senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
     }
     else if (object->getClass()->isSameOrInheritsFrom(*rpr::ExpendablesInterface::meta().type()))
@@ -124,7 +124,7 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
         auto* newInstance = memnew(ExpendableManager);
         newInstance->setInterface( object, &config_);
         newInstance->set_name(object->getLocalName().c_str());
-        senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
     }
     else if (object->getClass()->isSameOrInheritsFrom(*rpr::MunitionInterface::meta().type()))
@@ -132,7 +132,7 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
         auto* newInstance = memnew(MunitionManager);
         newInstance->setInterface( object, &config_);
         newInstance->set_name(object->getLocalName().c_str());
-        senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
     }
 }

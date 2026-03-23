@@ -5,8 +5,10 @@
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/core/class_db.hpp>
-#include <sen/kernel/component_api.h>
+#include <godot_cpp/classes/label3d.hpp>
 
+// sen
+#include <sen/kernel/component_api.h>
 
 void BaseEntityManager::_bind_methods()
 {
@@ -41,6 +43,11 @@ void BaseEntityManager::align_belly_to_origin()
     const godot::Vector3 forward = right.cross(up).normalized();
 
     set_global_basis(godot::Basis(right, up, -forward));
+}
+
+Pivot* BaseEntityManager::getEntityPivots() noexcept
+{
+    return &pivot_;
 }
 
 void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
@@ -97,4 +104,14 @@ void BaseEntityManager::_ready()
         model_->set_name("model");
         pivot_.roll->call_deferred("add_child", model_);
     }
+
+    // TODO: Add debug mode and show the labels, and make it always the same size
+    // godot::Label3D* label = memnew(godot::Label3D);
+    // label->set_text(interface_->asObject().getName().c_str());
+    // label->set_position(godot::Vector3(0.0, 7.5, 0.0));
+    // label->set_billboard_mode(godot::BaseMaterial3D::BILLBOARD_ENABLED);
+    // label->set_pixel_size(1.0f);
+    // label->set_draw_flag(godot::Label3D::FLAG_DISABLE_DEPTH_TEST, true);
+    // pivot_.roll->call_deferred("add_child", label);
+    // label->set_owner(pivot_.roll->get_owner());
 }

@@ -36,8 +36,10 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/platform_manager.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/expendable_manager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/expendable_manager.h
-        src/managers/munition_manager.cpp
-        src/managers/munition_manager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/munition_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/munition_manager.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/view_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/managers/view_manager.h
 )
 
 # Add std fom
@@ -61,6 +63,17 @@ sen_generate_cpp(
         ${CMAKE_CURRENT_SOURCE_DIR}/src/stl/configuration.stl
         BASE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/src/stl
+)
+
+# Add ig interface path
+sen_generate_cpp(
+        TARGET
+        ${PROJECT_NAME}
+        STL_FILES
+        $ENV{IG_INTERFACE_FOM_PATH}/stl/ig_interface/view.stl
+        $ENV{IG_INTERFACE_FOM_PATH}/stl/common/basic_types.stl
+        BASE_PATH
+        $ENV{IG_INTERFACE_FOM_PATH}/stl
 )
 
 target_link_libraries(${PROJECT_NAME}

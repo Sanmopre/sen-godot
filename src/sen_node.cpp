@@ -7,7 +7,9 @@
 // godot
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/classes/engine.hpp"
+#include "godot_cpp/classes/packed_scene.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
+#include "godot_cpp/classes/resource_loader.hpp"
 
 namespace godot
 {
@@ -29,6 +31,26 @@ NodePath SenNode::get_georeference_path() const
     return georeferencePath_;
 }
 
+void SenNode::set_tileset_paths(const godot::Array& tilesets)
+{
+    tilesetsPaths_ = tilesets;
+    tilesetsNodes_.clear();
+    for (int i = 0; i < tilesetsPaths_.size(); ++i)
+    {
+        godot::NodePath path = tilesetsPaths_[i];
+        godot::Node *node = get_node_or_null(path);
+        if (node)
+        {
+            tilesetsNodes_.push_back(node);
+        }
+    }
+}
+
+Array SenNode::get_tileset_paths() const
+{
+    return tilesetsPaths_;
+}
+
 godot::Vector3 SenNode::getGeoreferenceEcefValue()
 {
     const auto x =  (double)georeferenceNode_->get("ecefX");
@@ -41,6 +63,11 @@ godot::Vector3 SenNode::getGeoreferenceEcefValue()
 Node* SenNode::getGeoreferenceNode() const noexcept
 {
     return georeferenceNode_;
+}
+
+godot::Array* SenNode::getTilesets() noexcept
+{
+    return &tilesetsNodes_;
 }
 
 void SenNode::_ready()
@@ -96,13 +123,39 @@ void SenNode::_ready()
 
 void SenNode::_bind_methods()
 {
-    godot::ClassDB::bind_method(godot::D_METHOD("set_georeference_path", "path"), &SenNode::set_georeference_path);
-    godot::ClassDB::bind_method(godot::D_METHOD("get_georeference_path"), &SenNode::get_georeference_path);
+    godot::ClassDB::bind_method(
+        godot::D_METHOD("set_georeference_path", "path"),
+        &SenNode::set_georeference_path
+    );
+    godot::ClassDB::bind_method(
+        godot::D_METHOD("get_georeference_path"),
+        &SenNode::get_georeference_path
+    );
+
+    godot::ClassDB::bind_method(
+        godot::D_METHOD("set_tileset_paths", "paths"),
+        &SenNode::set_tileset_paths
+    );
+    godot::ClassDB::bind_method(
+        godot::D_METHOD("get_tileset_paths"),
+        &SenNode::get_tileset_paths
+    );
 
     ADD_PROPERTY(
         godot::PropertyInfo(godot::Variant::NODE_PATH, "georeference_path"),
         "set_georeference_path",
         "get_georeference_path"
+    );
+
+    ADD_PROPERTY(
+        godot::PropertyInfo(
+            godot::Variant::ARRAY,
+            "tileset_paths",
+            godot::PROPERTY_HINT_TYPE_STRING,
+            godot::String::num(godot::Variant::NODE_PATH) + ":"
+        ),
+        "set_tileset_paths",
+        "get_tileset_paths"
     );
 }
 

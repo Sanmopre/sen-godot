@@ -1,8 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dpt2dfe62v10o"]
-
-[ext_resource type="Script" uid="uid://bqo1aj72rhnti" path="res://addons/cesium_godot/scripts/camera_controllers/CesiumDynamicCamera.gd" id="1_o5qli"]
-
-[sub_resource type="Environment" id="Environment_o5qli"]
+[gd_scene load_steps=2 format=3 uid="uid://dpt2dfe62v10o"]
 
 [sub_resource type="Environment" id="Environment_0wfyh"]
 glow_enabled = true
@@ -11,6 +7,7 @@ glow_enabled = true
 
 [node name="senNode" type="SenNode" parent="."]
 georeference_path = NodePath("../georeference")
+tileset_paths = [NodePath("../georeference/Google Photorealistic 3D Tiles")]
 
 [node name="light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.942642, 0.333807, 0, -0.333807, -0.942642, 0, 0, 0)
@@ -32,14 +29,6 @@ forbid_holes = true
 ion_asset_id = 2275207
 show_hierarchy = true
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0.331456, 1.02806, -0.359025)
-
-[node name="cesiumCamera" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
-environment = SubResource("Environment_o5qli")
-fov = 37.8493
-script = ExtResource("1_o5qli")
-globe_node = NodePath("../georeference")
-tilesets = [NodePath("../georeference/Google Photorealistic 3D Tiles")]
-render_atmosphere = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0wfyh")

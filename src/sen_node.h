@@ -29,10 +29,13 @@ public:
     // Setters - Getters
     void set_georeference_path(const godot::NodePath &path);
     [[nodiscard]] NodePath get_georeference_path() const;
+    void set_tileset_paths(const godot::Array &tilesets);
+    [[nodiscard]] godot::Array get_tileset_paths() const;
 
 public:
     [[nodiscard]] godot::Vector3 getGeoreferenceEcefValue();
     [[nodiscard]] Node* getGeoreferenceNode() const noexcept;
+    [[nodiscard]] godot::Array* getTilesets() noexcept;
 
 private:
     std::shared_ptr<SenGodotComponent> component_;
@@ -40,7 +43,9 @@ private:
 
 private:
     NodePath georeferencePath_;
+    Array tilesetsPaths_;
     Node* georeferenceNode_;
+    Array tilesetsNodes_;
 };
 
 }

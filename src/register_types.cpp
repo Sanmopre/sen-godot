@@ -3,6 +3,7 @@
 #include "managers/aircraft_manager.h"
 #include "managers/expendable_manager.h"
 #include "managers/munition_manager.h"
+#include "managers/view_manager.h"
 
 // godot
 #include <gdextension_interface.h>
@@ -17,6 +18,7 @@ void initializeSenGodotModule(godot::ModuleInitializationLevel p_level) {
     GDREGISTER_CLASS(godot::SenNode);
     GDREGISTER_CLASS(RootManager);
     GDREGISTER_CLASS(BaseEntityManager);
+    GDREGISTER_CLASS(ViewManager);
     GDREGISTER_CLASS(PhysicalEntityManager);
     GDREGISTER_CLASS(MunitionManager);
     GDREGISTER_CLASS(ExpendableManager);

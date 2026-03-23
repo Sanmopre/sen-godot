@@ -1,4 +1,4 @@
 TODO:
-- Make an enum with all 3D model available in the engine
-- Multiple query interest from yaml config
-- bootloader load from yaml invoked 
+- Multiple cameras at the same time with viewports
+- Attached cameras
+- Make 3D Labels be displayed always as the same size (maybe)

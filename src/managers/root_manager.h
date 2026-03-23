@@ -10,10 +10,13 @@
 // generated code
 #include "configuration.stl.h"
 
+namespace godot {class SenNode;}
+
 struct ComponentConfiguration
 {
     std::shared_ptr<configuration::EngineConfigurationBase> engineConfiguration_;
     sen::impl::WorkQueue* workQueue_;
+    godot::SenNode* senNode_;
 };
 
 
