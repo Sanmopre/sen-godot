@@ -21,8 +21,21 @@ struct ModelMapping
 
 sequence<ModelMapping> ModelMappingList;
 
+struct Viewport
+{
+  view   : string,
+  layer  : u8,
+  left   : f32,
+  right  : f32,
+  top    : f32,
+  bottom : f32
+}
+
+sequence<Viewport> Viewports;
+
 class EngineConfiguration
 {
   var inputQueries  : StringList       [static];
   var modelMappings : ModelMappingList [static];
+  var viewports     : Viewports        [confirmed];
 }

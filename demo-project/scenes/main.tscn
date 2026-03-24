@@ -1,4 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dpt2dfe62v10o"]
+[gd_scene load_steps=4 format=3 uid="uid://dpt2dfe62v10o"]
+
+[ext_resource type="Script" uid="uid://bqo1aj72rhnti" path="res://addons/cesium_godot/scripts/camera_controllers/CesiumDynamicCamera.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://7cfytdhu2roa" path="res://addons/cesium_godot/scripts/camera_controllers/AbstractCesiumCamera.gd" id="2_0wfyh"]
 
 [sub_resource type="Environment" id="Environment_0wfyh"]
 glow_enabled = true
@@ -30,5 +33,26 @@ ion_asset_id = 2275207
 show_hierarchy = true
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0.331456, 1.02806, -0.359025)
 
+[node name="SubViewportContainer" type="SubViewportContainer" parent="georeference"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="SubViewport" type="SubViewport" parent="georeference/SubViewportContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="AbstractCesiumCamera" type="Camera3D" parent="georeference/SubViewportContainer/SubViewport" node_paths=PackedStringArray("globe_node", "tilesets")]
+script = ExtResource("2_0wfyh")
+globe_node = NodePath("../../..")
+tilesets = [NodePath("../../../Google Photorealistic 3D Tiles")]
+render_atmosphere = true
+metadata/_custom_type_script = "uid://7cfytdhu2roa"
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0wfyh")
+
+[node name="CesiumDynamicCam" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
+script = ExtResource("1_o5qli")
+globe_node = NodePath("../georeference")
+tilesets = [NodePath("../georeference/Google Photorealistic 3D Tiles")]

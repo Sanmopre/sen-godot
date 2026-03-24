@@ -34,10 +34,12 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
     api.getTypes().add(rpr::AircraftInterface::meta().shared_from_this());
     api.getTypes().add(rpr::MunitionInterface::meta().shared_from_this());
     api.getTypes().add(rpr::ExpendablesInterface::meta().shared_from_this());
+    api.getTypes().add(sen_ig_gateway::SensorViewInterface::meta().shared_from_this());
 #elif __linux__
     api.getTypes().add(rpr::AircraftInterface::meta());
     api.getTypes().add(rpr::MunitionInterface::meta());
     api.getTypes().add(rpr::ExpendablesInterface::meta());
+    api.getTypes().add(sen_ig_gateway::SensorViewInterface::meta());
 #endif
 
     config_.workQueue_ = api.getWorkQueue();
@@ -135,6 +137,14 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
         config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
     }
+    else if (object->getClass()->isSameOrInheritsFrom(*sen_ig_gateway::SensorViewInterface::meta().type()))
+    {
+        auto* newInstance = memnew(ViewManager);
+        newInstance->setInterface( object, &config_);
+        newInstance->set_name(object->getLocalName().c_str());
+        config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        viewManagers_.try_emplace(object->getLocalName(), newInstance);
+    }
 }
 
 void SenGodotComponent::onObjectRemoved(sen::Object* object)
@@ -143,6 +153,11 @@ void SenGodotComponent::onObjectRemoved(sen::Object* object)
     {
         baseEntityManagers_.at(object->getLocalName())->queue_free();
         baseEntityManagers_.erase(object->getLocalName());
+    }
+    else if (object->getClass()->isSameOrInheritsFrom(*sen_ig_gateway::SensorViewInterface::meta().type()))
+    {
+        viewManagers_.at(object->getLocalName())->queue_free();
+        viewManagers_.erase(object->getLocalName());
     }
 }
 
