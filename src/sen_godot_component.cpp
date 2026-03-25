@@ -142,7 +142,7 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
         auto* newInstance = memnew(ViewManager);
         newInstance->setInterface( object, &config_);
         newInstance->set_name(object->getLocalName().c_str());
-        config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        //config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         viewManagers_.try_emplace(object->getLocalName(), newInstance);
     }
 }

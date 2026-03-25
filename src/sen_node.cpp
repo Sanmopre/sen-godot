@@ -16,8 +16,6 @@ namespace godot
 
 void SenNode::_physics_process(double p_delta)
 {
-    // auto testValue = getGeoreferenceEcefValue();
-    // UtilityFunctions::print("x:", testValue.x, " y: ",testValue.y," z:", testValue.z);
     kernel_->step();
 }
 
@@ -51,23 +49,55 @@ Array SenNode::get_tileset_paths() const
     return tilesetsPaths_;
 }
 
-godot::Vector3 SenNode::getGeoreferenceEcefValue()
-{
-    const auto x =  (double)georeferenceNode_->get("ecefX");
-    const auto y =  (double)georeferenceNode_->get("ecefY");
-    const auto z =  (double)georeferenceNode_->get("ecefZ");
-
-    return Vector3(x, y, z);
-}
-
 Node* SenNode::getGeoreferenceNode() const noexcept
 {
     return georeferenceNode_;
 }
 
-godot::Array* SenNode::getTilesets() noexcept
+Node* SenNode::getTileset(const std::string& name) noexcept
 {
-    return &tilesetsNodes_;
+    if (const auto it = tilesets_.find(name); it != tilesets_.end())
+    {
+        return tilesets_.at(name);
+    }
+
+    return nullptr;
+}
+
+
+void SenNode::createNewTileset(const TilesetConfiguration& config)
+{
+    Object *obj = ClassDB::instantiate("Cesium3DTileset");
+    if (!obj)
+    {
+        UtilityFunctions::push_error("Can not create Cesium3DTileset");
+    }
+
+    auto* newTileset = Object::cast_to<Node>(obj);
+
+    newTileset->set_name(config.name.c_str());
+    newTileset->set("maximum_screen_space_error", config.maximumScreenSpaceError);
+    newTileset->set("maximum_simultaneous_tile_loads", config.maximumSimultaneousTileLoads);
+    newTileset->set("ion_asset_id", config.assetId);
+    newTileset->set("loading_descendant_limit", config.loadingDescendantLimit);
+    newTileset->set("preload_ancestors", true);
+    newTileset->set("preload_siblings", true);
+    newTileset->set("forbid_holes", true);
+    newTileset->set("create_physics_meshes", false);
+    georeferenceNode_->add_child(newTileset);
+    tilesets_.try_emplace(config.name, newTileset);
+}
+
+void SenNode::deleteTileset(const std::string& name)
+{
+    if (const auto it = tilesets_.find(name); it == tilesets_.end())
+    {
+        UtilityFunctions::push_warning("Trying to remove tileset ",name.c_str() ," that doesn't exists");
+        return;
+    }
+
+    tilesets_.at(name)->queue_free();
+    tilesets_.erase(name);
 }
 
 void SenNode::_ready()
