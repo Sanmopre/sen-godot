@@ -46,6 +46,7 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
     const auto configGlobalPath = godot::ProjectSettings::get_singleton()->globalize_path("res://config/configuration.yaml");
     const auto varMap = sen::kernel::getConfigAsVarFromYaml(configGlobalPath.utf8().get_data(), false);
     config_.engineConfiguration_ = std::make_shared<configuration::EngineConfigurationBase>("engine_config", varMap);
+    config_.baseEntityManagers_ = &baseEntityManagers_;
     subscribeToQueries(api);
     return Component::init(std::move(api));
 }
@@ -142,7 +143,7 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
         auto* newInstance = memnew(ViewManager);
         newInstance->setInterface( object, &config_);
         newInstance->set_name(object->getLocalName().c_str());
-        //config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
+        config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         viewManagers_.try_emplace(object->getLocalName(), newInstance);
     }
 }

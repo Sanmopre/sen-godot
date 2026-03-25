@@ -2,6 +2,9 @@ inputQueries:
   - SELECT * FROM ig.result
   - SELECT * FROM views.views
 
+viewports:
+  - view: bababui
+
 modelMappings:
   - disTypes: ["4:198:2:1:0:0:7"]
     model: c17
