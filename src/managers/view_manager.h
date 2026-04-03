@@ -32,7 +32,7 @@ public: // godot::Node implementation
 private:
     InterfaceType* interface_ = nullptr;
     const configuration::Viewport* currentViewport = nullptr;
-
+    std::vector<sen::ConnectionGuard> guards_;
 
     godot::SubViewportContainer* subViewContainer_ = nullptr;
     godot::Viewport* viewport_ = nullptr;

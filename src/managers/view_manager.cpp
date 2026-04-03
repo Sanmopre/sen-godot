@@ -4,6 +4,7 @@
 // godot
 #include "godot_cpp/classes/packed_scene.hpp"
 #include "godot_cpp/classes/resource_loader.hpp"
+#include "godot_cpp/classes/scene_tree.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/classes/viewport.hpp"
 
@@ -12,6 +13,27 @@ void ViewManager::setInterface(sen::Object* interface,  ComponentConfiguration* 
     godot::UtilityFunctions::push_error("setInterface CALLED");
 
     interface_ = dynamic_cast<InterfaceType*>(interface);
+
+
+    // Callbacks
+    guards_.emplace_back(interface_->onFovChanged({config->workQueue_, [this]()
+    {
+        const auto fovValue = interface_->getFov().left.get() + interface_->getFov().right.get();
+        camera_->call_deferred("set_fov", fovValue);
+    }}));
+
+    guards_.emplace_back(interface_->onViewTypeChanged({config->workQueue_, [this]()
+    {
+        std::visit(
+                 sen::Overloaded
+                 {
+                     [](const sen_ig_gateway::FreeCamera& freeCamera){},
+                     [](const sen_ig_gateway::AttachedCamera& attachedCamera){},
+                     [](const sen_ig_gateway::OrbitCamera& orbitCamera){},
+                 },
+                 interface_->getViewType());
+
+    }}));
 
     const auto& viewports = config->engineConfiguration_->getViewports();
     for (const auto& viewport : viewports)
@@ -61,18 +83,10 @@ void ViewManager::_ready()
     camera_->set("tilesets", tilesets);
     camera_->set("render_atmosphere", true);
 
-    if (const auto* attachedView = std::get_if<sen_ig_gateway::AttachedCamera>(&interface_->getViewType()); attachedView != nullptr)
-    {
-        const auto it = getConfig()->baseEntityManagers_->find(attachedView->entity);
-        if (it == getConfig()->baseEntityManagers_->end())
-        {
-            return;
-        }
-
-        subViewContainer_->add_child(viewport_);
-        viewport_->add_child(camera_);
-        it->second->getEntityPivots()->roll->add_child(subViewContainer_);
-    }
+    // Add camera and viewport to the scene
+    get_tree()->get_current_scene()->add_child(subViewContainer_);
+    subViewContainer_->add_child(viewport_);
+    viewport_->add_child(camera_);
 
     RootManager::_ready();
 }

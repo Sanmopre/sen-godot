@@ -98,6 +98,7 @@ void SenGodotComponent::subscribeToQueries(sen::kernel::InitApi& api)
         for (auto itr = iterators.untypedBegin; itr != iterators.untypedEnd; ++itr)
         {
             onObjectAdded((*itr).get());
+            (*itr)->invokeAllPropertyCallbacks();
         }
     });
 
