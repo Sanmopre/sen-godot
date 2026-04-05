@@ -3,7 +3,12 @@ inputQueries:
   - SELECT * FROM views.views
 
 viewports:
-  - view: bababui
+  - view: view_1
+    layer: 1
+    left: 0.5
+    right: 0.5
+    top: 0.5
+    bottom: 0.5
 
 modelMappings:
   - disTypes: ["4:198:2:1:0:0:7"]

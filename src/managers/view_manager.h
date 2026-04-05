@@ -28,6 +28,7 @@ public:
 
 public: // godot::Node implementation
     void _ready() override;
+    void _process(double p_delta) override;
 
 private:
     InterfaceType* interface_ = nullptr;
@@ -37,5 +38,10 @@ private:
     godot::SubViewportContainer* subViewContainer_ = nullptr;
     godot::Viewport* viewport_ = nullptr;
     godot::Camera3D* camera_ = nullptr;
+
+private:
+    // properties callbacks
+    bool fovChanged_ = false;
+    bool viewTypeChanged_ = false;
 };
 

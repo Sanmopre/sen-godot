@@ -32,7 +32,7 @@ public:
     ~SenNode() override = default ;
 
     void _ready() override;
-    void _physics_process(double p_delta) override;
+    void _process(double p_delta) override;
 
 public:
     // Setters - Getters

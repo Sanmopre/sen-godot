@@ -32,6 +32,7 @@ public:
 
 public: // godot::Node implementation
     void _ready() override;
+    void _process(double p_delta) override;
 
 public:
     void align_belly_to_origin();
@@ -44,5 +45,10 @@ private:
     std::vector<sen::ConnectionGuard> guards_;
     std::unique_ptr<sen::util::DeadReckoner<InterfaceType>> deadReckoner_;
     std::string entityType;
+
+private:
+    // properties
+    godot::Vector3 ecefLocation_;
+    godot::Vector3 rotation_;
 };
 

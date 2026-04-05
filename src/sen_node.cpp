@@ -14,11 +14,6 @@
 namespace godot
 {
 
-void SenNode::_physics_process(double p_delta)
-{
-    kernel_->step();
-}
-
 void SenNode::set_georeference_path(const godot::NodePath& path)
 {
     georeferencePath_ = path;
@@ -149,6 +144,12 @@ void SenNode::_ready()
 
     bootLoader->getConfig().addToLoad(componentConfig);
     kernel_ = std::make_unique<sen::kernel::TestKernel>(bootLoader->getConfig());
+}
+
+void SenNode::_process(double p_delta)
+{
+    kernel_->step();
+    Node::_process(p_delta);
 }
 
 void SenNode::_bind_methods()

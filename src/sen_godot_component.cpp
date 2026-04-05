@@ -119,33 +119,33 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
     {
         auto* newInstance = memnew(AircraftManager);
         newInstance->setInterface( object, &config_);
-        newInstance->set_name(object->getLocalName().c_str());
+        newInstance->set_name(object->getName().c_str());
         config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
-        baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
+        baseEntityManagers_.try_emplace(object->getName(), newInstance);
     }
     else if (object->getClass()->isSameOrInheritsFrom(*rpr::ExpendablesInterface::meta().type()))
     {
         auto* newInstance = memnew(ExpendableManager);
         newInstance->setInterface( object, &config_);
-        newInstance->set_name(object->getLocalName().c_str());
+        newInstance->set_name(object->getName().c_str());
         config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
-        baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
+        baseEntityManagers_.try_emplace(object->getName(), newInstance);
     }
     else if (object->getClass()->isSameOrInheritsFrom(*rpr::MunitionInterface::meta().type()))
     {
         auto* newInstance = memnew(MunitionManager);
         newInstance->setInterface( object, &config_);
-        newInstance->set_name(object->getLocalName().c_str());
+        newInstance->set_name(object->getName().c_str());
         config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
-        baseEntityManagers_.try_emplace(object->getLocalName(), newInstance);
+        baseEntityManagers_.try_emplace(object->getName(), newInstance);
     }
     else if (object->getClass()->isSameOrInheritsFrom(*sen_ig_gateway::SensorViewInterface::meta().type()))
     {
         auto* newInstance = memnew(ViewManager);
         newInstance->setInterface( object, &config_);
-        newInstance->set_name(object->getLocalName().c_str());
+        newInstance->set_name(object->getName().c_str());
         config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
-        viewManagers_.try_emplace(object->getLocalName(), newInstance);
+        viewManagers_.try_emplace(object->getName(), newInstance);
     }
 }
 
@@ -153,13 +153,13 @@ void SenGodotComponent::onObjectRemoved(sen::Object* object)
 {
     if (object->getClass()->isSameOrInheritsFrom(*rpr::BaseEntityInterface::meta().type()))
     {
-        baseEntityManagers_.at(object->getLocalName())->queue_free();
-        baseEntityManagers_.erase(object->getLocalName());
+        baseEntityManagers_.at(object->getName())->queue_free();
+        baseEntityManagers_.erase(object->getName());
     }
     else if (object->getClass()->isSameOrInheritsFrom(*sen_ig_gateway::SensorViewInterface::meta().type()))
     {
-        viewManagers_.at(object->getLocalName())->queue_free();
-        viewManagers_.erase(object->getLocalName());
+        viewManagers_.at(object->getName())->queue_free();
+        viewManagers_.erase(object->getName());
     }
 }
 

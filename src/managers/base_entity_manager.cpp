@@ -58,37 +58,35 @@ void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
         return;
     }
 
+    godot::UtilityFunctions::print(interface_->getIsPartOf().hostRTIObjectIdentifier.c_str());
+
     // Set the ECEF position of the entity (Currently working when georeference node is set to true origin)
     const auto situation = deadReckoner_->situation(api->getTime());
-    const godot::Vector3 ecefLocation {situation.worldLocation.x.get(), situation.worldLocation.y.get(), situation.worldLocation.z.get()};
-    this->call_deferred("set_position", ecefLocation);
+    ecefLocation_ = godot::Vector3{situation.worldLocation.x.get(), situation.worldLocation.y.get(), situation.worldLocation.z.get()};
 
     // Set the orientation of the aircraft setting all the euler pivots
     if (model_ && pivot_.yaw && pivot_.pitch && pivot_.roll)
     {
         const auto geodeticSituation = deadReckoner_->geodeticSituation(api->getTime());
-        pivot_.yaw->call_deferred("set_rotation", godot::Vector3(0.0, geodeticSituation.orientation.psi, 0.0));
-        pivot_.pitch->call_deferred("set_rotation", godot::Vector3(0.0, 0.0, geodeticSituation.orientation.theta));
-        pivot_.roll->call_deferred("set_rotation", godot::Vector3(-geodeticSituation.orientation.phi, 0.0, 0.0));
+        rotation_.x = -geodeticSituation.orientation.phi;
+        rotation_.y = geodeticSituation.orientation.psi;
+        rotation_.z = geodeticSituation.orientation.theta;
     }
-
-    // Make the entity have the belly point toward the center of the earth
-    call_deferred("align_belly_to_origin");
 }
 
 void BaseEntityManager::_ready()
 {
     pivot_.yaw = memnew(Node3D);
     pivot_.yaw->set_name("yaw_pivot");
-    this->call_deferred("add_child", pivot_.yaw);
+    this->add_child(pivot_.yaw);
 
     pivot_.pitch = memnew(Node3D);
     pivot_.pitch->set_name("pitch_pivot");
-    pivot_.yaw->call_deferred("add_child", pivot_.pitch);
+    pivot_.yaw->add_child(pivot_.pitch);
 
     pivot_.roll = memnew(Node3D);
     pivot_.roll->set_name("roll_pivot");
-    pivot_.pitch->call_deferred("add_child", pivot_.roll);
+    pivot_.pitch->add_child(pivot_.roll);
 
     const auto modelPath = getModelPath(getModel(interface_->getEntityType(),getConfig()->engineConfiguration_->getModelMappings()));
 
@@ -102,7 +100,7 @@ void BaseEntityManager::_ready()
     if (model_ = scene->instantiate(); model_ != nullptr)
     {
         model_->set_name("model");
-        pivot_.roll->call_deferred("add_child", model_);
+        pivot_.roll->add_child(model_);
     }
 
     // TODO: Add debug mode and show the labels, and make it always the same size
@@ -112,6 +110,20 @@ void BaseEntityManager::_ready()
     // label->set_billboard_mode(godot::BaseMaterial3D::BILLBOARD_ENABLED);
     // label->set_pixel_size(1.0f);
     // label->set_draw_flag(godot::Label3D::FLAG_DISABLE_DEPTH_TEST, true);
-    // pivot_.roll->call_deferred("add_child", label);
+    // pivot_.roll->add_child(label);
     // label->set_owner(pivot_.roll->get_owner());
+}
+
+void BaseEntityManager::_process(double p_delta)
+{
+    // Set ECEF position
+    set_position(ecefLocation_);
+
+    // Set orientation
+    pivot_.yaw->set_rotation(godot::Vector3(0.0, rotation_.y, 0.0));
+    pivot_.pitch->set_rotation(godot::Vector3(0.0, 0.0, rotation_.z));
+    pivot_.roll->set_rotation(godot::Vector3(rotation_.x, 0.0, 0.0));
+
+    // Make the entity have the belly point toward the center of the earth
+    align_belly_to_origin();
 }

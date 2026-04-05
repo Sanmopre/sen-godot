@@ -10,30 +10,8 @@
 
 void ViewManager::setInterface(sen::Object* interface,  ComponentConfiguration* config)
 {
-    godot::UtilityFunctions::push_error("setInterface CALLED");
-
+    godot::UtilityFunctions::push_error("begin setInterface()");
     interface_ = dynamic_cast<InterfaceType*>(interface);
-
-
-    // Callbacks
-    guards_.emplace_back(interface_->onFovChanged({config->workQueue_, [this]()
-    {
-        const auto fovValue = interface_->getFov().left.get() + interface_->getFov().right.get();
-        camera_->call_deferred("set_fov", fovValue);
-    }}));
-
-    guards_.emplace_back(interface_->onViewTypeChanged({config->workQueue_, [this]()
-    {
-        std::visit(
-                 sen::Overloaded
-                 {
-                     [](const sen_ig_gateway::FreeCamera& freeCamera){},
-                     [](const sen_ig_gateway::AttachedCamera& attachedCamera){},
-                     [](const sen_ig_gateway::OrbitCamera& orbitCamera){},
-                 },
-                 interface_->getViewType());
-
-    }}));
 
     const auto& viewports = config->engineConfiguration_->getViewports();
     for (const auto& viewport : viewports)
@@ -51,6 +29,7 @@ void ViewManager::setInterface(sen::Object* interface,  ComponentConfiguration* 
     }
 
     RootManager::setInterface(interface, config);
+    godot::UtilityFunctions::push_error("end setInterface()");
 }
 
 void ViewManager::setEntityToAttach(BaseEntityManager* entity)
@@ -64,6 +43,18 @@ void ViewManager::componentUpdate(sen::kernel::RunApi* api)
 
 void ViewManager::_ready()
 {
+    if (!interface_)
+    {
+        godot::UtilityFunctions::push_error("interface_ is NULL in _ready()");
+        return;
+    }
+
+    if (!getConfig() || !getConfig()->senNode_)
+    {
+        godot::UtilityFunctions::push_error("Config or senNode is NULL");
+        return;
+    }
+
     camera_ = memnew(godot::Camera3D);
     subViewContainer_ = memnew(godot::SubViewportContainer);
     viewport_ = memnew(godot::Viewport);
@@ -71,22 +62,42 @@ void ViewManager::_ready()
     // set camera script
     godot::Ref<godot::Script> cam_script =
     godot::ResourceLoader::get_singleton()->load(
-        "res://addons/cesium_godot/scripts/camera_controllers/AbstractCesiumCamera.gd"
+    "res://scripts/camera.gd"
     );
+
+    if (cam_script.is_null()) {
+        godot::UtilityFunctions::push_error("Failed to load camera script!");
+        return;
+    }
+
     camera_->set_script(cam_script);
 
-    getConfig()->senNode_->createNewTileset({interface_->asObject().getName()});
+    //getConfig()->senNode_->createNewTileset({interface_->asObject().getName()});
     godot::Array tilesets;
     tilesets.push_back(getConfig()->senNode_->getTileset(interface_->asObject().getName()));
 
-    camera_->set("globe_node", getConfig()->senNode_->getGeoreferenceNode());
+    //camera_->set("globe_node", getConfig()->senNode_->getGeoreferenceNode());
     camera_->set("tilesets", tilesets);
-    camera_->set("render_atmosphere", true);
+    //camera_->set("render_atmosphere", true);
 
     // Add camera and viewport to the scene
-    get_tree()->get_current_scene()->add_child(subViewContainer_);
+    this->add_child(subViewContainer_);
     subViewContainer_->add_child(viewport_);
     viewport_->add_child(camera_);
 
     RootManager::_ready();
+}
+
+void ViewManager::_process(double p_delta)
+{
+    //
+    // if (viewTypeChanged_)
+    // {
+    //     godot::UtilityFunctions::push_warning("VIEW TYPE CHANGED");
+    // }
+
+
+    fovChanged_ = false;
+    viewTypeChanged_ = false;
+    RootManager::_process(p_delta);
 }
