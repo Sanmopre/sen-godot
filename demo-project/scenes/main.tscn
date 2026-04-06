@@ -31,7 +31,7 @@ forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
 show_hierarchy = true
-transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0.331456, 1.02806, -0.359025)
+transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0wfyh")

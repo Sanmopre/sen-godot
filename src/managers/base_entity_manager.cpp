@@ -50,6 +50,11 @@ Pivot* BaseEntityManager::getEntityPivots() noexcept
     return &pivot_;
 }
 
+godot::Node* BaseEntityManager::getModelNode() const noexcept
+{
+    return model_;
+}
+
 void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
 {
     if (!interface_)
@@ -57,8 +62,6 @@ void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
         godot::UtilityFunctions::push_error("BaseEntityManager: invalid interface cast");
         return;
     }
-
-    godot::UtilityFunctions::print(interface_->getIsPartOf().hostRTIObjectIdentifier.c_str());
 
     // Set the ECEF position of the entity (Currently working when georeference node is set to true origin)
     const auto situation = deadReckoner_->situation(api->getTime());

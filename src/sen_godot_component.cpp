@@ -115,6 +115,14 @@ void SenGodotComponent::subscribeToQueries(sen::kernel::InitApi& api)
 
 void SenGodotComponent::onObjectAdded(sen::Object* object)
 {
+    const auto it1 = baseEntityManagers_.find(object->getName());
+    const auto it2 = viewManagers_.find(object->getName());
+    if (it1 != baseEntityManagers_.end() || it2 != viewManagers_.end())
+    {
+        godot::UtilityFunctions::push_warning("Object ", object->getName().c_str(), " already exists");
+        return;
+    }
+
     if (object->getClass()->isSameOrInheritsFrom(*rpr::AircraftInterface::meta().type()))
     {
         auto* newInstance = memnew(AircraftManager);
@@ -160,6 +168,7 @@ void SenGodotComponent::onObjectRemoved(sen::Object* object)
     {
         viewManagers_.at(object->getName())->queue_free();
         viewManagers_.erase(object->getName());
+        config_.senNode_->deleteTileset(object->getName() + "_tileset");
     }
 }
 

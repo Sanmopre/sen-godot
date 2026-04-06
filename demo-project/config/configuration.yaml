@@ -5,9 +5,9 @@ inputQueries:
 viewports:
   - view: view_1
     layer: 1
-    left: 0.5
+    left: 0.0
     right: 0.5
-    top: 0.5
+    top: 0.0
     bottom: 0.5
 
 modelMappings:

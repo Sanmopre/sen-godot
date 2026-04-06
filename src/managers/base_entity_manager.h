@@ -37,6 +37,7 @@ public: // godot::Node implementation
 public:
     void align_belly_to_origin();
     [[nodiscard]] Pivot* getEntityPivots() noexcept;
+    [[nodiscard]] Node* getModelNode() const noexcept;
 
 private:
     InterfaceType* interface_ = nullptr;

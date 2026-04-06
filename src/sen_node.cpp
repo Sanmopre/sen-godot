@@ -56,6 +56,7 @@ Node* SenNode::getTileset(const std::string& name) noexcept
         return tilesets_.at(name);
     }
 
+    UtilityFunctions::push_error("Tileset ", name.c_str(), " not found");
     return nullptr;
 }
 
@@ -67,6 +68,13 @@ void SenNode::createNewTileset(const TilesetConfiguration& config)
     {
         UtilityFunctions::push_error("Can not create Cesium3DTileset");
     }
+
+    if (const auto it = tilesets_.find(config.name); it != tilesets_.end())
+    {
+        UtilityFunctions::print("Tileset for ",config.name.c_str()," already exists");
+        return;
+    }
+
 
     auto* newTileset = Object::cast_to<Node>(obj);
 
