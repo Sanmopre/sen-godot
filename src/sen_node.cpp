@@ -74,10 +74,8 @@ void SenNode::createNewTileset(const TilesetConfiguration& config)
         UtilityFunctions::print("Tileset for ",config.name.c_str()," already exists");
         return;
     }
-
-
-    auto* newTileset = Object::cast_to<Node>(obj);
-
+    
+    auto* newTileset = Object::cast_to<Node3D>(obj);
     newTileset->set_name(config.name.c_str());
     newTileset->set("maximum_screen_space_error", config.maximumScreenSpaceError);
     newTileset->set("maximum_simultaneous_tile_loads", config.maximumSimultaneousTileLoads);
@@ -87,6 +85,10 @@ void SenNode::createNewTileset(const TilesetConfiguration& config)
     newTileset->set("preload_siblings", true);
     newTileset->set("forbid_holes", true);
     newTileset->set("create_physics_meshes", false);
+
+    // Set 90 degrees of rotation on x (Wierd cesium integration)
+    newTileset->set_rotation(Vector3{1.5708,0,0});
+
     georeferenceNode_->add_child(newTileset);
     tilesets_.try_emplace(config.name, newTileset);
 }

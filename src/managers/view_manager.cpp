@@ -85,13 +85,9 @@ void ViewManager::_ready()
     godot::TilesetConfiguration config;
     config.name = interface_->asObject().getName() + "_tileset";
     getConfig()->senNode_->createNewTileset(config);
-    if (const Node* tileset = getConfig()->senNode_->getTileset(interface_->asObject().getName() + "_tileset"))
-    {
-        godot::Array tilesets;
-        godot::UtilityFunctions::print("TILESET = ", tileset->get_path());
-        tilesets.push_back(tileset);
-        camera_->set("tilesets", tilesets);
-    }
+
+    // Set the tileset name in the script
+    camera_->set("tileset_name", config.name.c_str());
 
     get_viewport()->connect(
     "size_changed",
