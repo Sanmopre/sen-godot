@@ -24,85 +24,9 @@ NodePath SenNode::get_georeference_path() const
     return georeferencePath_;
 }
 
-void SenNode::set_tileset_paths(const godot::Array& tilesets)
-{
-    tilesetsPaths_ = tilesets;
-    tilesetsNodes_.clear();
-    for (int i = 0; i < tilesetsPaths_.size(); ++i)
-    {
-        godot::NodePath path = tilesetsPaths_[i];
-        godot::Node *node = get_node_or_null(path);
-        if (node)
-        {
-            tilesetsNodes_.push_back(node);
-        }
-    }
-}
-
-Array SenNode::get_tileset_paths() const
-{
-    return tilesetsPaths_;
-}
-
 Node* SenNode::getGeoreferenceNode() const noexcept
 {
     return georeferenceNode_;
-}
-
-Node* SenNode::getTileset(const std::string& name) noexcept
-{
-    if (const auto it = tilesets_.find(name); it != tilesets_.end())
-    {
-        return tilesets_.at(name);
-    }
-
-    UtilityFunctions::push_error("Tileset ", name.c_str(), " not found");
-    return nullptr;
-}
-
-
-void SenNode::createNewTileset(const TilesetConfiguration& config)
-{
-    Object *obj = ClassDB::instantiate("Cesium3DTileset");
-    if (!obj)
-    {
-        UtilityFunctions::push_error("Can not create Cesium3DTileset");
-    }
-
-    if (const auto it = tilesets_.find(config.name); it != tilesets_.end())
-    {
-        UtilityFunctions::print("Tileset for ",config.name.c_str()," already exists");
-        return;
-    }
-    
-    auto* newTileset = Object::cast_to<Node3D>(obj);
-    newTileset->set_name(config.name.c_str());
-    newTileset->set("maximum_screen_space_error", config.maximumScreenSpaceError);
-    newTileset->set("maximum_simultaneous_tile_loads", config.maximumSimultaneousTileLoads);
-    newTileset->set("ion_asset_id", config.assetId);
-    newTileset->set("loading_descendant_limit", config.loadingDescendantLimit);
-    newTileset->set("preload_ancestors", true);
-    newTileset->set("preload_siblings", true);
-    newTileset->set("forbid_holes", true);
-    newTileset->set("create_physics_meshes", false);
-
-    // Set 90 degrees of rotation on x (Wierd cesium integration)
-    newTileset->set_rotation(Vector3{1.5708,0,0});
-
-    georeferenceNode_->add_child(newTileset);
-    tilesets_.try_emplace(config.name, newTileset);
-}
-
-void SenNode::deleteTileset(const std::string& name)
-{
-    if (const auto it = tilesets_.find(name); it == tilesets_.end())
-    {
-        UtilityFunctions::push_warning("Trying to remove tileset ",name.c_str() ," that doesn't exists");
-        return;
-    }
-
-    tilesets_.at(name)->queue_free();
-    tilesets_.erase(name);
 }
 
 void SenNode::_ready()
@@ -171,15 +95,6 @@ void SenNode::_bind_methods()
     godot::ClassDB::bind_method(
         godot::D_METHOD("get_georeference_path"),
         &SenNode::get_georeference_path
-    );
-
-    godot::ClassDB::bind_method(
-        godot::D_METHOD("set_tileset_paths", "paths"),
-        &SenNode::set_tileset_paths
-    );
-    godot::ClassDB::bind_method(
-        godot::D_METHOD("get_tileset_paths"),
-        &SenNode::get_tileset_paths
     );
 
     ADD_PROPERTY(

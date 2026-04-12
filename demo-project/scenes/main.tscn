@@ -1,18 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://dpt2dfe62v10o"]
+[gd_scene load_steps=5 format=3 uid="uid://dpt2dfe62v10o"]
 
 [ext_resource type="Script" uid="uid://bqo1aj72rhnti" path="res://addons/cesium_godot/scripts/camera_controllers/CesiumDynamicCamera.gd" id="1_o5qli"]
 
-[sub_resource type="Environment" id="Environment_0wfyh"]
-glow_enabled = true
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_o5qli"]
+
+[sub_resource type="Sky" id="Sky_0wfyh"]
+resource_local_to_scene = true
+sky_material = SubResource("PhysicalSkyMaterial_o5qli")
+
+[sub_resource type="Environment" id="Environment_o5qli"]
+background_mode = 2
+sky = SubResource("Sky_0wfyh")
+ambient_light_source = 3
 
 [node name="main" type="Node3D"]
 
 [node name="senNode" type="SenNode" parent="."]
 georeference_path = NodePath("../georeference")
-tileset_paths = [NodePath("../georeference/googleTiles")]
 
 [node name="light" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.942642, 0.333807, 0, -0.333807, -0.942642, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="georeference" type="CesiumGeoreference" parent="."]
 ecefX = 4.84959e+06
@@ -34,11 +41,11 @@ show_hierarchy = true
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_0wfyh")
+environment = SubResource("Environment_o5qli")
 
 [node name="CesiumDynamicCam" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
 far = 10000.0
 script = ExtResource("1_o5qli")
 globe_node = NodePath("../georeference")
-tilesets = [NodePath("../georeference/googleTiles"), NodePath("")]
+tilesets = [NodePath("../georeference/googleTiles")]
 render_atmosphere = true

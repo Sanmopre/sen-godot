@@ -34,12 +34,10 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
     api.getTypes().add(rpr::AircraftInterface::meta().shared_from_this());
     api.getTypes().add(rpr::MunitionInterface::meta().shared_from_this());
     api.getTypes().add(rpr::ExpendablesInterface::meta().shared_from_this());
-    api.getTypes().add(sen_ig_gateway::SensorViewInterface::meta().shared_from_this());
 #elif __linux__
     api.getTypes().add(rpr::AircraftInterface::meta());
     api.getTypes().add(rpr::MunitionInterface::meta());
     api.getTypes().add(rpr::ExpendablesInterface::meta());
-    api.getTypes().add(sen_ig_gateway::SensorViewInterface::meta());
 #endif
 
     config_.workQueue_ = api.getWorkQueue();
@@ -115,9 +113,7 @@ void SenGodotComponent::subscribeToQueries(sen::kernel::InitApi& api)
 
 void SenGodotComponent::onObjectAdded(sen::Object* object)
 {
-    const auto it1 = baseEntityManagers_.find(object->getName());
-    const auto it2 = viewManagers_.find(object->getName());
-    if (it1 != baseEntityManagers_.end() || it2 != viewManagers_.end())
+    if (const auto it = baseEntityManagers_.find(object->getName()); it != baseEntityManagers_.end())
     {
         godot::UtilityFunctions::push_warning("Object ", object->getName().c_str(), " already exists");
         return;
@@ -147,14 +143,6 @@ void SenGodotComponent::onObjectAdded(sen::Object* object)
         config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
         baseEntityManagers_.try_emplace(object->getName(), newInstance);
     }
-    else if (object->getClass()->isSameOrInheritsFrom(*sen_ig_gateway::SensorViewInterface::meta().type()))
-    {
-        auto* newInstance = memnew(ViewManager);
-        newInstance->setInterface( object, &config_);
-        newInstance->set_name(object->getName().c_str());
-        config_.senNode_->getGeoreferenceNode()->call_deferred("add_child", newInstance);
-        viewManagers_.try_emplace(object->getName(), newInstance);
-    }
 }
 
 void SenGodotComponent::onObjectRemoved(sen::Object* object)
@@ -163,12 +151,6 @@ void SenGodotComponent::onObjectRemoved(sen::Object* object)
     {
         baseEntityManagers_.at(object->getName())->queue_free();
         baseEntityManagers_.erase(object->getName());
-    }
-    else if (object->getClass()->isSameOrInheritsFrom(*sen_ig_gateway::SensorViewInterface::meta().type()))
-    {
-        viewManagers_.at(object->getName())->queue_free();
-        viewManagers_.erase(object->getName());
-        config_.senNode_->deleteTileset(object->getName() + "_tileset");
     }
 }
 

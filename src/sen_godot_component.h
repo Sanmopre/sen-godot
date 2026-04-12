@@ -1,7 +1,6 @@
 #pragma once
 
 #include "managers/aircraft_manager.h"
-#include "managers/view_manager.h"
 
 // sen
 #include <sen/kernel/test_kernel.h>
@@ -49,7 +48,6 @@ private: // Sen subscription objects
 
 private: // Managers
     std::unordered_map<std::string, BaseEntityManager*> baseEntityManagers_;
-    std::unordered_map<std::string, ViewManager*> viewManagers_;
 };
 
 
