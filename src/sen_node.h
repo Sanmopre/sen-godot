@@ -4,6 +4,7 @@
 
 // godot
 #include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/item_list.hpp>
 
 // sen
 #include "sen/kernel/test_kernel.h"
@@ -29,7 +30,13 @@ public:
     // Setters - Getters
     void set_georeference_path(const godot::NodePath &path);
     [[nodiscard]] NodePath get_georeference_path() const;
+    void set_item_list_path(const NodePath &path) {
+        item_list_path_ = path;
+    }
 
+    [[nodiscard]] NodePath get_item_list_path() const {
+        return item_list_path_;
+    }
 public:
     [[nodiscard]] Node* getGeoreferenceNode() const noexcept;
 
@@ -40,6 +47,12 @@ private:
 private: // References
     NodePath georeferencePath_;
     Node* georeferenceNode_;
+
+private:
+    std::unique_ptr<UI_Components> uiComponents_;
+    NodePath item_list_path_;
+
+
 };
 
 }

@@ -33,6 +33,7 @@ public:
 public: // godot::Node implementation
     void _ready() override;
     void _process(double p_delta) override;
+    void _exit_tree() override;
 
 public:
     void align_belly_to_origin();
@@ -51,5 +52,8 @@ private:
     // properties
     godot::Vector3 ecefLocation_;
     godot::Vector3 rotation_;
+
+    // UI list handle
+    int32_t itemId_ = 0;
 };
 

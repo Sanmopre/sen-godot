@@ -31,6 +31,18 @@ Node* SenNode::getGeoreferenceNode() const noexcept
 
 void SenNode::_ready()
 {
+    uiComponents_ = std::make_unique<UI_Components>();
+
+    if (!item_list_path_.is_empty())
+    {
+        uiComponents_->itemList = get_node<ItemList>(item_list_path_);
+
+        if (!uiComponents_->itemList)
+        {
+            UtilityFunctions::push_error("ItemList path is not an ItemList!");
+        }
+    }
+
     georeferenceNode_ = get_node_or_null(georeferencePath_);
     if (!georeferenceNode_)
     {
@@ -38,7 +50,7 @@ void SenNode::_ready()
     }
 
     const auto millisecondsPerTick = static_cast<i64>(1000.0 / Engine::get_singleton()->get_physics_ticks_per_second());
-    component_ = std::make_shared<SenGodotComponent>(this, georeferenceNode_, std::chrono::milliseconds(millisecondsPerTick));
+    component_ = std::make_shared<SenGodotComponent>(this,uiComponents_.get(), georeferenceNode_, std::chrono::milliseconds(millisecondsPerTick));
 
     const auto bootConfigGlobalPath = godot::ProjectSettings::get_singleton()->globalize_path("res://config/boot.yaml");
     const auto bootLoader = sen::kernel::Bootloader::fromYamlFile(bootConfigGlobalPath.utf8().get_data(), false);
@@ -96,6 +108,11 @@ void SenNode::_bind_methods()
         godot::D_METHOD("get_georeference_path"),
         &SenNode::get_georeference_path
     );
+    ClassDB::bind_method(D_METHOD("set_item_list_path", "path"), &SenNode::set_item_list_path);
+    ClassDB::bind_method(D_METHOD("get_item_list_path"), &SenNode::get_item_list_path);
+
+    ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "item_list_path"),
+                 "set_item_list_path", "get_item_list_path");
 
     ADD_PROPERTY(
         godot::PropertyInfo(godot::Variant::NODE_PATH, "georeference_path"),

@@ -2,6 +2,9 @@
 
 #include "managers/aircraft_manager.h"
 
+// godot
+#include "godot_cpp/classes/item_list.hpp"
+
 // sen
 #include <sen/kernel/test_kernel.h>
 #include "sen/core/obj/object_mux.h"
@@ -19,10 +22,15 @@ namespace godot
     class SenNode;
 }
 
+struct UI_Components
+{
+    godot::ItemList* itemList = nullptr;
+};
+
 class SenGodotComponent : public sen::kernel::Component
 {
 public:
-    SenGodotComponent(godot::SenNode* senNode, godot::Node* georeferenceNode, const sen::Duration& tickDuration);
+    SenGodotComponent(godot::SenNode* senNode, UI_Components* uiComponents, godot::Node* georeferenceNode, const sen::Duration& tickDuration);
     ~SenGodotComponent() override = default;
 
     sen::kernel::FuncResult load(sen::kernel::LoadApi&&) override;
@@ -38,6 +46,7 @@ private:
 
 private:
     ComponentConfiguration config_;
+    UI_Components* uiComponents_;
     godot::Node* georeferenceNode_;
     sen::Duration tickDuration_;
 

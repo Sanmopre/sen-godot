@@ -10,6 +10,8 @@
 // sen
 #include <sen/kernel/component_api.h>
 
+#include "../sen_godot_component.h"
+
 void BaseEntityManager::_bind_methods()
 {
     godot::ClassDB::bind_method(godot::D_METHOD("align_belly_to_origin"), &BaseEntityManager::align_belly_to_origin);
@@ -79,6 +81,9 @@ void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
 
 void BaseEntityManager::_ready()
 {
+    // Add the entity to the list of entities list
+    itemId_ = getConfig()->uiComponents_->itemList->add_item(interface_->asObject().getName().c_str());
+
     pivot_.yaw = memnew(Node3D);
     pivot_.yaw->set_name("yaw_pivot");
     this->add_child(pivot_.yaw);
@@ -129,4 +134,11 @@ void BaseEntityManager::_process(double p_delta)
 
     // Make the entity have the belly point toward the center of the earth
     align_belly_to_origin();
+}
+
+void BaseEntityManager::_exit_tree()
+{
+    // Remove the entity from the entity list
+    getConfig()->uiComponents_->itemList->remove_item(itemId_);
+    RootManager::_exit_tree();
 }

@@ -13,9 +13,10 @@
 #include "managers/munition_manager.h"
 #include "sen/core/meta/class_type.h"
 
-SenGodotComponent::SenGodotComponent(godot::SenNode* senNode, godot::Node* georeferenceNode, const sen::Duration& tickDuration)
+SenGodotComponent::SenGodotComponent(godot::SenNode* senNode,UI_Components* uiComponents, godot::Node* georeferenceNode, const sen::Duration& tickDuration)
     :
-      georeferenceNode_(georeferenceNode)
+      uiComponents_(uiComponents)
+    , georeferenceNode_(georeferenceNode)
     , tickDuration_(tickDuration)
     , trackedObjects_(std::make_unique<sen::ObjectList<sen::Object>>())
     , mux_(std::make_unique<sen::ObjectMux>())
@@ -45,6 +46,7 @@ sen::kernel::PassResult SenGodotComponent::init(sen::kernel::InitApi&& api)
     const auto varMap = sen::kernel::getConfigAsVarFromYaml(configGlobalPath.utf8().get_data(), false);
     config_.engineConfiguration_ = std::make_shared<configuration::EngineConfigurationBase>("engine_config", varMap);
     config_.baseEntityManagers_ = &baseEntityManagers_;
+    config_.uiComponents_ = uiComponents_;
     subscribeToQueries(api);
     return Component::init(std::move(api));
 }

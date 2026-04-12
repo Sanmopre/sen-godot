@@ -16,10 +16,10 @@ ambient_light_source = 3
 [node name="main" type="Node3D"]
 
 [node name="senNode" type="SenNode" parent="."]
+item_list_path = NodePath("../UI_Control/ItemList")
 georeference_path = NodePath("../georeference")
 
 [node name="light" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="georeference" type="CesiumGeoreference" parent="."]
 ecefX = 4.84959e+06
@@ -43,9 +43,44 @@ transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o5qli")
 
-[node name="CesiumDynamicCam" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
+[node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
 far = 10000.0
 script = ExtResource("1_o5qli")
 globe_node = NodePath("../georeference")
 tilesets = [NodePath("../georeference/googleTiles")]
 render_atmosphere = true
+
+[node name="UI_Control" type="Control" parent="."]
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1880.0
+offset_bottom = -1040.0
+
+[node name="senVersionText" type="RichTextLabel" parent="UI_Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 46.717
+anchor_top = 25.882
+anchor_right = 46.717
+anchor_bottom = 25.882
+offset_left = -145.68
+offset_top = -89.28
+offset_right = -64.68
+offset_bottom = -59.28
+text = "sen 5.2.0"
+
+[node name="ItemList" type="ItemList" parent="UI_Control"]
+offset_left = 33.0
+offset_top = 25.0
+offset_right = 119.0
+offset_bottom = 195.0
+auto_width = true
+auto_height = true
+item_count = 6
+item_0/text = "Chaff_2"
+item_1/text = "Chaff_3"
+item_2/text = "Chaff_6"
+item_3/text = "Chaff_8"
+item_4/text = "Chaff_10"
+item_5/text = "Chaff_14"

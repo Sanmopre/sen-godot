@@ -10,6 +10,7 @@
 // generated code
 #include "configuration.stl.h"
 
+struct UI_Components;
 class BaseEntityManager;
 namespace godot {class SenNode;}
 
@@ -18,6 +19,7 @@ struct ComponentConfiguration
     std::shared_ptr<configuration::EngineConfigurationBase> engineConfiguration_;
     sen::impl::WorkQueue* workQueue_;
     godot::SenNode* senNode_;
+    UI_Components* uiComponents_;
     std::unordered_map<std::string, BaseEntityManager*>* baseEntityManagers_;
 };
 
