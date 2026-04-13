@@ -119,17 +119,6 @@ void SenNode::_bind_methods()
         "set_georeference_path",
         "get_georeference_path"
     );
-
-    ADD_PROPERTY(
-        godot::PropertyInfo(
-            godot::Variant::ARRAY,
-            "tileset_paths",
-            godot::PROPERTY_HINT_TYPE_STRING,
-            godot::String::num(godot::Variant::NODE_PATH) + ":"
-        ),
-        "set_tileset_paths",
-        "get_tileset_paths"
-    );
 }
 
 }

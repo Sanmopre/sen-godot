@@ -6,15 +6,18 @@
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/label3d.hpp>
-
+#include <godot_cpp/variant/node_path.hpp>
 // sen
 #include <sen/kernel/component_api.h>
 
 #include "../sen_godot_component.h"
+#include "godot_cpp/classes/scene_tree.hpp"
+#include "godot_cpp/classes/window.hpp"
 
 void BaseEntityManager::_bind_methods()
 {
     godot::ClassDB::bind_method(godot::D_METHOD("align_belly_to_origin"), &BaseEntityManager::align_belly_to_origin);
+    godot::ClassDB::bind_method(godot::D_METHOD("on_item_selected", "index"), &BaseEntityManager::on_item_selected);
 }
 
 void BaseEntityManager::setInterface(sen::Object* interface, ComponentConfiguration* config)
@@ -57,6 +60,14 @@ godot::Node* BaseEntityManager::getModelNode() const noexcept
     return model_;
 }
 
+void BaseEntityManager::on_item_selected(int32_t index)
+{
+    if (index == itemId_)
+    {
+        cameraNode_->set("entity_to_follow", model_);
+    }
+}
+
 void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
 {
     if (!interface_)
@@ -84,6 +95,10 @@ void BaseEntityManager::_ready()
     // Add the entity to the list of entities list
     itemId_ = getConfig()->uiComponents_->itemList->add_item(interface_->asObject().getName().c_str());
 
+    getConfig()->uiComponents_->itemList->connect(
+        "item_selected",
+        godot::Callable(this, "on_item_selected"));
+
     pivot_.yaw = memnew(Node3D);
     pivot_.yaw->set_name("yaw_pivot");
     this->add_child(pivot_.yaw);
@@ -110,6 +125,9 @@ void BaseEntityManager::_ready()
         model_->set_name("model");
         pivot_.roll->add_child(model_);
     }
+
+    // Get node path
+    cameraNode_ = get_tree()->get_root()->get_node_or_null(godot::NodePath("main/Camera"));
 
     // TODO: Add debug mode and show the labels, and make it always the same size
     // godot::Label3D* label = memnew(godot::Label3D);

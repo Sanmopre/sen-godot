@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dpt2dfe62v10o"]
 
-[ext_resource type="Script" uid="uid://bqo1aj72rhnti" path="res://addons/cesium_godot/scripts/camera_controllers/CesiumDynamicCamera.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://cia7bmm06vhwx" path="res://scripts/camera/dynamicCamera.gd" id="1_o5qli"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_o5qli"]
 
@@ -52,10 +52,13 @@ render_atmosphere = true
 
 [node name="UI_Control" type="Control" parent="."]
 layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_right = -1880.0
 offset_bottom = -1040.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="senVersionText" type="RichTextLabel" parent="UI_Control"]
 layout_mode = 1
@@ -71,16 +74,10 @@ offset_bottom = -59.28
 text = "sen 5.2.0"
 
 [node name="ItemList" type="ItemList" parent="UI_Control"]
+layout_mode = 0
 offset_left = 33.0
 offset_top = 25.0
 offset_right = 119.0
 offset_bottom = 195.0
 auto_width = true
 auto_height = true
-item_count = 6
-item_0/text = "Chaff_2"
-item_1/text = "Chaff_3"
-item_2/text = "Chaff_6"
-item_3/text = "Chaff_8"
-item_4/text = "Chaff_10"
-item_5/text = "Chaff_14"

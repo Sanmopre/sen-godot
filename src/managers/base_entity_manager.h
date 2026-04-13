@@ -39,7 +39,7 @@ public:
     void align_belly_to_origin();
     [[nodiscard]] Pivot* getEntityPivots() noexcept;
     [[nodiscard]] Node* getModelNode() const noexcept;
-
+    void on_item_selected(int32_t index);
 private:
     InterfaceType* interface_ = nullptr;
     Node* model_ = nullptr;
@@ -47,6 +47,7 @@ private:
     std::vector<sen::ConnectionGuard> guards_;
     std::unique_ptr<sen::util::DeadReckoner<InterfaceType>> deadReckoner_;
     std::string entityType;
+    godot::Node *cameraNode_ = nullptr;
 
 private:
     // properties
