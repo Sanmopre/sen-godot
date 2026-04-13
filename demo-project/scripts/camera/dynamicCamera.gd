@@ -23,15 +23,13 @@ var curr_pitch: float
 var moving_direction: Vector3
 
 @export
-var entityToFollow : Node3D = null
+var entity_to_follow : Node3D = null
 
 func _physics_process(_delta: float) -> void:
 
-	if entityToFollow != null:
-		global_transform = entityToFollow.global_transform
+	if entity_to_follow != null:
+		global_transform = entity_to_follow.global_transform
 		return
-	else:
-		entityToFollow = get_tree().current_scene.get_node_or_null("georeference/A400M_GAF_1/yaw_pivot/pitch_pivot/roll_pivot/model") as Node3D
 
 	self.surface_basis = self.calculate_surface_basis()
 	self.update_camera_rotation()
