@@ -43,9 +43,12 @@ transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o5qli")
 
-[node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("globe_node", "tilesets")]
+[node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("x_box", "y_box", "z_box", "globe_node", "tilesets")]
 far = 10000.0
 script = ExtResource("1_o5qli")
+x_box = NodePath("../UI_Control/cameraOffset/cartesianPosition/x")
+y_box = NodePath("../UI_Control/cameraOffset/cartesianPosition/y")
+z_box = NodePath("../UI_Control/cameraOffset/cartesianPosition/z")
 globe_node = NodePath("../georeference")
 tilesets = [NodePath("../georeference/googleTiles")]
 render_atmosphere = true
@@ -67,10 +70,10 @@ anchor_left = 46.717
 anchor_top = 25.882
 anchor_right = 46.717
 anchor_bottom = 25.882
-offset_left = -145.68
-offset_top = -89.28
-offset_right = -64.68
-offset_bottom = -59.28
+offset_left = -1719.68
+offset_top = -1005.28
+offset_right = -1638.68
+offset_bottom = -975.28
 text = "sen 5.2.0"
 
 [node name="ItemList" type="ItemList" parent="UI_Control"]
@@ -81,16 +84,58 @@ offset_right = 119.0
 offset_bottom = 195.0
 auto_width = true
 auto_height = true
-item_count = 12
-item_0/text = "Chaff_1"
-item_1/text = "Chaff_3"
-item_2/text = "Chaff_5"
-item_3/text = "Chaff_7"
-item_4/text = "Chaff_10"
-item_5/text = "Chaff_16"
-item_6/text = "Chaff_17"
-item_7/text = "Chaff_1"
-item_8/text = "Chaff_3"
-item_9/text = "Chaff_7"
-item_10/text = "Chaff_8"
-item_11/text = "Chaff_12"
+item_count = 23
+item_0/text = "F-18_1"
+item_1/text = "F-18_5"
+item_2/text = "F-18_3"
+item_3/text = "F-18_4"
+item_4/text = "F-18_5"
+item_5/text = "Chaff_1"
+item_6/text = "Chaff_3"
+item_7/text = "Chaff_5"
+item_8/text = "Chaff_7"
+item_9/text = "Chaff_10"
+item_10/text = "Chaff_18"
+item_11/text = "Chaff_1"
+item_12/text = "Chaff_3"
+item_13/text = "Chaff_8"
+item_14/text = "Chaff_9"
+item_15/text = "Chaff_11"
+item_16/text = "Chaff_13"
+item_17/text = "Chaff_17"
+item_18/text = "Chaff_1"
+item_19/text = "Chaff_3"
+item_20/text = "Chaff_9"
+item_21/text = "Chaff_15"
+item_22/text = "Chaff_16"
+
+[node name="cameraOffset" type="VBoxContainer" parent="UI_Control"]
+layout_mode = 0
+offset_left = 234.0
+offset_top = 97.0
+offset_right = 500.0
+offset_bottom = 163.0
+
+[node name="cartesianPosition" type="HBoxContainer" parent="UI_Control/cameraOffset"]
+layout_mode = 2
+
+[node name="x" type="SpinBox" parent="UI_Control/cameraOffset/cartesianPosition"]
+layout_mode = 2
+
+[node name="y" type="SpinBox" parent="UI_Control/cameraOffset/cartesianPosition"]
+layout_mode = 2
+
+[node name="z" type="SpinBox" parent="UI_Control/cameraOffset/cartesianPosition"]
+layout_mode = 2
+
+[node name="eulerAngles" type="HBoxContainer" parent="UI_Control/cameraOffset"]
+layout_mode = 2
+
+[node name="yaw" type="SpinBox" parent="UI_Control/cameraOffset/eulerAngles"]
+layout_mode = 2
+
+[node name="pitch" type="SpinBox" parent="UI_Control/cameraOffset/eulerAngles"]
+layout_mode = 2
+
+[node name="roll" type="SpinBox" parent="UI_Control/cameraOffset/eulerAngles"]
+layout_mode = 2

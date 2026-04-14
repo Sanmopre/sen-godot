@@ -5,30 +5,46 @@ class_name DynamicCamera extends BaseCamera
 @export
 var move_speed : float = 100
 
-var offset_speed: float = 0;
+var offset_speed: float = 0.0
 
 @export
 var rotation_speed : float = 0.005
 
-var desired_cam_pos : Vector3 = Vector3.ZERO
-
-var is_moving_physical : bool = false
-
-var surface_basis: Basis
-
-var curr_yaw: float
-
-var curr_pitch: float
-
-var moving_direction: Vector3
+@export
+var follow_offset: Vector3 = Vector3.ZERO
 
 @export
-var entity_to_follow : Node3D = null
+var follow_rotation_offset_degrees: Vector3 = Vector3.ZERO
+# X = pitch, Y = yaw, Z = roll
+
+var desired_cam_pos : Vector3 = Vector3.ZERO
+var is_moving_physical : bool = false
+var surface_basis: Basis
+var curr_yaw: float
+var curr_pitch: float
+var moving_direction: Vector3
+
+@export var entity_to_follow : Node3D = null
+
+@export var x_box := SpinBox
+@export var y_box := SpinBox
+@export var z_box := SpinBox
 
 func _physics_process(_delta: float) -> void:
-
 	if entity_to_follow != null:
-		global_transform = entity_to_follow.global_transform
+		var target_transform := entity_to_follow.global_transform
+		var target_basis := target_transform.basis.orthonormalized()
+
+		var target_pos := target_transform.origin + target_basis * follow_offset
+
+		var rot_offset_basis := Basis()
+		rot_offset_basis = rot_offset_basis.rotated(Vector3.RIGHT, deg_to_rad(follow_rotation_offset_degrees.x))
+		rot_offset_basis = rot_offset_basis.rotated(Vector3.UP, deg_to_rad(follow_rotation_offset_degrees.y))
+		rot_offset_basis = rot_offset_basis.rotated(Vector3.BACK, deg_to_rad(follow_rotation_offset_degrees.z))
+
+		var final_basis := (target_basis * rot_offset_basis).orthonormalized()
+
+		global_transform = Transform3D(final_basis, target_pos)
 		return
 
 	self.surface_basis = self.calculate_surface_basis()
@@ -43,11 +59,9 @@ func _physics_process(_delta: float) -> void:
 		var ecefDir : Vector3 = self.globe_node.get_initial_tx_engine_to_ecef() * self.moving_direction
 		camera_walk_ecef(-ecefDir.normalized())
 
-
 func _process(delta: float) -> void:
 	super(delta)
 	movement_input(delta)
-
 
 func calculate_surface_basis() -> Basis:
 	var cam_ecef_pos : Vector3
@@ -62,20 +76,16 @@ func calculate_surface_basis() -> Basis:
 	
 	var dotProduct := up.dot(reference)
 	
-	if (dotProduct > 0.99):
+	if dotProduct > 0.99:
 		reference = self.global_basis.x
 	
-	# Calculate right vector using cross product
 	var right := up.cross(reference).normalized()
-
-	# Calculate forward vector using cross product of right and up
 	var forward := right.cross(up).normalized()
 	var result := Basis(right, up, -forward)
 	return result
 
-
 func movement_input(delta: float):
-	if (Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)):
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		var mouse_velocity : Vector2 = Input.get_last_mouse_velocity()
 		var delta_yaw : float = mouse_velocity.x * delta * self.rotation_speed
 		var delta_pitch : float = mouse_velocity.y * delta * self.rotation_speed
@@ -84,98 +94,80 @@ func movement_input(delta: float):
 	var direction := Vector3.ZERO
 	var movingBasis : Basis = self.global_transform.basis
 
-	if (Input.is_key_pressed(KEY_KP_ADD) || Input.is_key_pressed(KEY_PLUS)):
+	if Input.is_key_pressed(KEY_KP_ADD) or Input.is_key_pressed(KEY_PLUS):
 		self.offset_speed += self.move_speed * 0.1 * delta
-	if (Input.is_key_pressed(KEY_KP_SUBTRACT) || Input.is_key_pressed(KEY_MINUS)):
+	if Input.is_key_pressed(KEY_KP_SUBTRACT) or Input.is_key_pressed(KEY_MINUS):
 		self.offset_speed = maxf(self.offset_speed - self.move_speed * 0.1 * delta, 0.0)
 
-	if (Input.is_key_pressed(KEY_Q)):
+	if Input.is_key_pressed(KEY_Q):
 		direction -= movingBasis.y
-	if (Input.is_key_pressed(KEY_E)):
+	if Input.is_key_pressed(KEY_E):
 		direction += movingBasis.y
 
-	if (Input.is_key_pressed(KEY_W)):
+	if Input.is_key_pressed(KEY_W):
 		direction -= movingBasis.z
-	if (Input.is_key_pressed(KEY_S)):
+	if Input.is_key_pressed(KEY_S):
 		direction += movingBasis.z
 
-	if (Input.is_key_pressed(KEY_D)):
+	if Input.is_key_pressed(KEY_D):
 		direction += movingBasis.x
-	if (Input.is_key_pressed(KEY_A)):
+	if Input.is_key_pressed(KEY_A):
 		direction -= movingBasis.x
-	if (Input.is_key_pressed(KEY_KP_6)):
+	if Input.is_key_pressed(KEY_KP_6):
 		rotate_z(delta * 0.5)
-	if (Input.is_key_pressed(KEY_KP_4)):
+	if Input.is_key_pressed(KEY_KP_4):
 		rotate_z(-delta * 0.5)
 		
 	self.moving_direction = direction.normalized()
 
-
 func camera_walk_ecef(direction: Vector3) -> void:
-	if (direction == Vector3.ZERO): return
+	if direction == Vector3.ZERO:
+		return
 	direction *= -self.move_speed
 	
 	self.globe_node.ecefX += direction.x
 	self.globe_node.ecefY += direction.y
 	self.globe_node.ecefZ += direction.z
 
-
 func camera_walk_physical(direction: Vector3) -> void:
 	if desired_cam_pos == Vector3.ZERO:
-		# Pretty much delete this I guess
 		self.desired_cam_pos = self.global_position + direction * self.move_speed
 
 	self.desired_cam_pos += direction * self.move_speed
 	self.is_moving_physical = direction != Vector3.ZERO
 
-
 func update_camera_pos_physical() -> void:
 	if self.is_moving_physical:
 		self.global_position = self.desired_cam_pos
 
-
 func update_camera_rotation() -> void:
-	# Apply yaw first around original Y axis
 	var moddedBasis: Basis = self.surface_basis.rotated(self.surface_basis.y.normalized(), -curr_yaw)
-	# Apply pitch around original X axis (now rotated by yaw)
-	# Using the updated X axis from the basis after yaw rotation
 	moddedBasis = moddedBasis.rotated(moddedBasis.x, curr_pitch)
 	moddedBasis.x = -moddedBasis.x
 
 	self.basis = moddedBasis
 	self.curr_yaw = 0
 
-
 func rotate_camera(delta_pitch: float, delta_yaw: float) -> void:
-	# Apply yaw rotation (unchanged)
 	self.curr_yaw += delta_yaw
 
-	# Get the current forward direction of the camera
 	var camera_forward: Vector3 = -self.global_basis.z.normalized()
-	# Get the reference "surface" forward direction (e.g., world up or target direction)
 	var surface_forward: Vector3 = self.surface_basis.z.normalized()
 
-	# Calculate the signed angle between vectors (in degrees)
 	var cross = camera_forward.cross(surface_forward)
 	var dot = camera_forward.dot(surface_forward)
 	var unsigned_angle = rad_to_deg(acos(clamp(dot, -1.0, 1.0)))
 
-	# Determine sign using the cross product's direction relative to the camera's right vector
 	var camera_right = self.global_basis.x.normalized()
-	
-	# dot product: Positive = above surface, Negative = below
-	var signed_angle = unsigned_angle * sign(cross.dot(camera_right)) 
+	var signed_angle = unsigned_angle * sign(cross.dot(camera_right))
 
-	# Clamp the pitch based on the signed angle
 	var desired_pitch = self.curr_pitch + delta_pitch
 
-	# We have a negative delta and the signed angle is already at its min
-	if (signed_angle > -110 && signed_angle < 0  && delta_pitch > 0):
+	if signed_angle > -110 and signed_angle < 0 and delta_pitch > 0:
 		return
-	if (signed_angle < 110 && signed_angle > 0 && delta_pitch < 0):
+	if signed_angle < 110 and signed_angle > 0 and delta_pitch < 0:
 		return
 	self.curr_pitch = desired_pitch
-
 
 func _get_surface_distance_raycast() -> float:
 	var space_state = get_world_3d().direct_space_state
@@ -189,7 +181,7 @@ func _get_surface_distance_raycast() -> float:
 	ray_query.hit_from_inside = true
 	ray_query.hit_back_faces = true
 	ray_query.exclude = [self]
-	ray_query.collision_mask = 1  # Adjust this mask as needed
+	ray_query.collision_mask = 1
 
 	var result: Dictionary = space_state.intersect_ray(ray_query)
 
@@ -197,7 +189,6 @@ func _get_surface_distance_raycast() -> float:
 	ray_query.hit_from_inside = false
 	var secondResult: Dictionary = space_state.intersect_ray(ray_query)
 
-	# Get the collision distances from the raycasts (default to RADII)
 	var distanceToFloor: float = RADII
 	if result:
 		distanceToFloor = global_position.distance_to(result.position)
@@ -206,11 +197,10 @@ func _get_surface_distance_raycast() -> float:
 	var distanceToMove: float = RADII
 	if secondResult:
 		distanceToMove = global_position.distance_to(secondResult.position)
-		if (distanceToMove < 10):
+		if distanceToMove < 10:
 			self.moving_direction = Vector3.ZERO
 		last_hit_distance = distanceToMove
 
-	# Determine the smallest distance from the raycasts
 	var closest_distance: float = distanceToFloor
 	if distanceToMove < closest_distance:
 		closest_distance = distanceToMove
