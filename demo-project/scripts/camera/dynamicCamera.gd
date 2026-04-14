@@ -3,32 +3,113 @@
 class_name DynamicCamera extends BaseCamera
 
 @export
-var move_speed : float = 100
+var move_speed: float = 100.0
 
 var offset_speed: float = 0.0
 
 @export
-var rotation_speed : float = 0.005
+var rotation_speed: float = 0.005
 
-@export
-var follow_offset: Vector3 = Vector3.ZERO
+@export var follow_offset: Vector3 = Vector3.ZERO:
+	set(value):
+		follow_offset = value
+		_sync_boxes_from_follow_offset()
 
-@export
-var follow_rotation_offset_degrees: Vector3 = Vector3.ZERO
+@export var follow_rotation_offset_degrees: Vector3 = Vector3.ZERO:
+	set(value):
+		follow_rotation_offset_degrees = value
+		_sync_rotation_boxes_from_follow_rotation_offset()
+
 # X = pitch, Y = yaw, Z = roll
 
-var desired_cam_pos : Vector3 = Vector3.ZERO
-var is_moving_physical : bool = false
+var desired_cam_pos: Vector3 = Vector3.ZERO
+var is_moving_physical: bool = false
 var surface_basis: Basis
 var curr_yaw: float
 var curr_pitch: float
 var moving_direction: Vector3
 
-@export var entity_to_follow : Node3D = null
+@export var entity_to_follow: Node3D = null
 
-@export var x_box := SpinBox
-@export var y_box := SpinBox
-@export var z_box := SpinBox
+@export var x_box: SpinBox
+@export var y_box: SpinBox
+@export var z_box: SpinBox
+
+@export var rot_x_box: SpinBox
+@export var rot_y_box: SpinBox
+@export var rot_z_box: SpinBox
+
+func _ready() -> void:
+	super._ready()
+
+	if x_box != null:
+		x_box.value_changed.connect(_on_follow_offset_changed)
+	if y_box != null:
+		y_box.value_changed.connect(_on_follow_offset_changed)
+	if z_box != null:
+		z_box.value_changed.connect(_on_follow_offset_changed)
+
+	if rot_x_box != null:
+		rot_x_box.value_changed.connect(_on_follow_rotation_offset_changed)
+	if rot_y_box != null:
+		rot_y_box.value_changed.connect(_on_follow_rotation_offset_changed)
+	if rot_z_box != null:
+		rot_z_box.value_changed.connect(_on_follow_rotation_offset_changed)
+
+	_sync_boxes_from_follow_offset()
+	_sync_rotation_boxes_from_follow_rotation_offset()
+
+func _on_follow_offset_changed(_value: float) -> void:
+	if x_box == null or y_box == null or z_box == null:
+		return
+
+	follow_offset = Vector3(
+		x_box.value,
+		y_box.value,
+		z_box.value
+	)
+
+func _sync_boxes_from_follow_offset() -> void:
+	if x_box == null or y_box == null or z_box == null:
+		return
+
+	x_box.set_block_signals(true)
+	y_box.set_block_signals(true)
+	z_box.set_block_signals(true)
+
+	x_box.value = follow_offset.x
+	y_box.value = follow_offset.y
+	z_box.value = follow_offset.z
+
+	x_box.set_block_signals(false)
+	y_box.set_block_signals(false)
+	z_box.set_block_signals(false)
+
+func _on_follow_rotation_offset_changed(_value: float) -> void:
+	if rot_x_box == null or rot_y_box == null or rot_z_box == null:
+		return
+
+	follow_rotation_offset_degrees = Vector3(
+		rot_x_box.value,
+		rot_y_box.value,
+		rot_z_box.value
+	)
+
+func _sync_rotation_boxes_from_follow_rotation_offset() -> void:
+	if rot_x_box == null or rot_y_box == null or rot_z_box == null:
+		return
+
+	rot_x_box.set_block_signals(true)
+	rot_y_box.set_block_signals(true)
+	rot_z_box.set_block_signals(true)
+
+	rot_x_box.value = follow_rotation_offset_degrees.x
+	rot_y_box.value = follow_rotation_offset_degrees.y
+	rot_z_box.value = follow_rotation_offset_degrees.z
+
+	rot_x_box.set_block_signals(false)
+	rot_y_box.set_block_signals(false)
+	rot_z_box.set_block_signals(false)
 
 func _physics_process(_delta: float) -> void:
 	if entity_to_follow != null:
@@ -56,7 +137,7 @@ func _physics_process(_delta: float) -> void:
 		self.camera_walk_physical(self.moving_direction)
 		self.update_camera_pos_physical()
 	else:
-		var ecefDir : Vector3 = self.globe_node.get_initial_tx_engine_to_ecef() * self.moving_direction
+		var ecefDir: Vector3 = self.globe_node.get_initial_tx_engine_to_ecef() * self.moving_direction
 		camera_walk_ecef(-ecefDir.normalized())
 
 func _process(delta: float) -> void:
@@ -64,13 +145,13 @@ func _process(delta: float) -> void:
 	movement_input(delta)
 
 func calculate_surface_basis() -> Basis:
-	var cam_ecef_pos : Vector3
+	var cam_ecef_pos: Vector3
 	if self.globe_node.origin_type == CesiumGeoreference.CartographicOrigin:
 		cam_ecef_pos = Vector3(self.globe_node.ecefX, self.globe_node.ecefY, self.globe_node.ecefZ)
 	else:
 		cam_ecef_pos = self.globe_node.get_tx_engine_to_ecef() * self.global_position
 	
-	var up : Vector3 = self.globe_node.get_normal_at_surface_pos(cam_ecef_pos)
+	var up: Vector3 = self.globe_node.get_normal_at_surface_pos(cam_ecef_pos)
 	
 	var reference = -self.global_basis.z
 	
@@ -84,15 +165,15 @@ func calculate_surface_basis() -> Basis:
 	var result := Basis(right, up, -forward)
 	return result
 
-func movement_input(delta: float):
+func movement_input(delta: float) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-		var mouse_velocity : Vector2 = Input.get_last_mouse_velocity()
-		var delta_yaw : float = mouse_velocity.x * delta * self.rotation_speed
-		var delta_pitch : float = mouse_velocity.y * delta * self.rotation_speed
+		var mouse_velocity: Vector2 = Input.get_last_mouse_velocity()
+		var delta_yaw: float = mouse_velocity.x * delta * self.rotation_speed
+		var delta_pitch: float = mouse_velocity.y * delta * self.rotation_speed
 		self.rotate_camera(delta_pitch, delta_yaw)
 	
 	var direction := Vector3.ZERO
-	var movingBasis : Basis = self.global_transform.basis
+	var movingBasis: Basis = self.global_transform.basis
 
 	if Input.is_key_pressed(KEY_KP_ADD) or Input.is_key_pressed(KEY_PLUS):
 		self.offset_speed += self.move_speed * 0.1 * delta
