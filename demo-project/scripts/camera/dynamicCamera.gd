@@ -31,6 +31,10 @@ var moving_direction: Vector3
 
 @export var entity_to_follow: Node3D = null
 
+# UI Elements
+@export var free_view_button: Button
+@export var entity_list : ItemList
+
 @export var x_box: SpinBox
 @export var y_box: SpinBox
 @export var z_box: SpinBox
@@ -56,8 +60,16 @@ func _ready() -> void:
 	if rot_z_box != null:
 		rot_z_box.value_changed.connect(_on_follow_rotation_offset_changed)
 
+	if free_view_button != null:
+		free_view_button.pressed.connect(_on_free_view_button_pressed)
+
 	_sync_boxes_from_follow_offset()
 	_sync_rotation_boxes_from_follow_rotation_offset()
+
+func _on_free_view_button_pressed() -> void:
+	entity_to_follow = null
+	if entity_list != null:
+		entity_list.deselect_all()
 
 func _on_follow_offset_changed(_value: float) -> void:
 	if x_box == null or y_box == null or z_box == null:
@@ -115,6 +127,9 @@ func _physics_process(_delta: float) -> void:
 	if entity_to_follow != null:
 		var target_transform := entity_to_follow.global_transform
 		var target_basis := target_transform.basis.orthonormalized()
+
+		if target_basis.determinant() < 0.0:
+			target_basis.x = -target_basis.x
 
 		var target_pos := target_transform.origin + target_basis * follow_offset
 

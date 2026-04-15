@@ -39,7 +39,7 @@ public:
     void align_belly_to_origin();
     [[nodiscard]] Pivot* getEntityPivots() noexcept;
     [[nodiscard]] Node* getModelNode() const noexcept;
-    void on_item_selected(int32_t index);
+    void on_item_selected(int32_t index) const;
 private:
     InterfaceType* interface_ = nullptr;
     Node* model_ = nullptr;
@@ -53,8 +53,6 @@ private:
     // properties
     godot::Vector3 ecefLocation_;
     godot::Vector3 rotation_;
-
-    // UI list handle
-    int32_t itemId_ = 0;
+    godot::String itemMetadataKey_;
 };
 

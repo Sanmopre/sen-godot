@@ -12,6 +12,9 @@ sky_material = SubResource("PhysicalSkyMaterial_o5qli")
 background_mode = 2
 sky = SubResource("Sky_0wfyh")
 ambient_light_source = 3
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.001
 
 [node name="main" type="Node3D"]
 
@@ -37,15 +40,17 @@ maximum_simultaneous_tile_loads = 30
 forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
-show_hierarchy = true
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="environment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o5qli")
 
-[node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]
+[node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("free_view_button", "entity_list", "x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]
 far = 10000.0
 script = ExtResource("1_o5qli")
+move_speed = 50.0
+free_view_button = NodePath("../UI_Control/freeViewButton")
+entity_list = NodePath("../UI_Control/ItemList")
 x_box = NodePath("../UI_Control/cameraOffset/cartesianPosition/x")
 y_box = NodePath("../UI_Control/cameraOffset/cartesianPosition/y")
 z_box = NodePath("../UI_Control/cameraOffset/cartesianPosition/z")
@@ -58,88 +63,24 @@ render_atmosphere = true
 
 [node name="UI_Control" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -1880.0
-offset_bottom = -1040.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="senVersionText" type="RichTextLabel" parent="UI_Control"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 46.717
-anchor_top = 25.882
-anchor_right = 46.717
-anchor_bottom = 25.882
-offset_left = -1719.68
-offset_top = -1005.28
-offset_right = -1638.68
-offset_bottom = -975.28
+offset_right = 81.0
+offset_bottom = 30.0
 text = "sen 5.2.0"
 
-[node name="ItemList" type="ItemList" parent="UI_Control"]
-layout_mode = 0
-offset_left = 33.0
-offset_top = 25.0
-offset_right = 119.0
-offset_bottom = 195.0
-auto_width = true
-auto_height = true
-item_count = 45
-item_0/text = "F-18_1"
-item_1/text = "F-18_5"
-item_2/text = "F-18_3"
-item_3/text = "F-18_4"
-item_4/text = "F-18_5"
-item_5/text = "Chaff_1"
-item_6/text = "Chaff_3"
-item_7/text = "Chaff_5"
-item_8/text = "Chaff_7"
-item_9/text = "Chaff_10"
-item_10/text = "Chaff_18"
-item_11/text = "Chaff_1"
-item_12/text = "Chaff_3"
-item_13/text = "Chaff_8"
-item_14/text = "Chaff_9"
-item_15/text = "Chaff_11"
-item_16/text = "Chaff_13"
-item_17/text = "Chaff_17"
-item_18/text = "Chaff_1"
-item_19/text = "Chaff_3"
-item_20/text = "Chaff_9"
-item_21/text = "Chaff_15"
-item_22/text = "Chaff_16"
-item_23/text = "A400M_GAF_1"
-item_24/text = "A400M_GAF_1"
-item_25/text = "Chaff_1"
-item_26/text = "Chaff_2"
-item_27/text = "Chaff_3"
-item_28/text = "Chaff_4"
-item_29/text = "Chaff_5"
-item_30/text = "Chaff_6"
-item_31/text = "Chaff_7"
-item_32/text = "Chaff_8"
-item_33/text = "Chaff_9"
-item_34/text = "Chaff_10"
-item_35/text = "Chaff_11"
-item_36/text = "Chaff_12"
-item_37/text = "Chaff_13"
-item_38/text = "Chaff_14"
-item_39/text = "Chaff_15"
-item_40/text = "Chaff_16"
-item_41/text = "Chaff_17"
-item_42/text = "Chaff_18"
-item_43/text = "Chaff_19"
-item_44/text = "Chaff_20"
-
 [node name="cameraOffset" type="VBoxContainer" parent="UI_Control"]
-layout_mode = 0
-offset_left = 234.0
-offset_top = 97.0
-offset_right = 500.0
-offset_bottom = 163.0
+layout_mode = 1
+anchors_preset = -1
+offset_left = 128.0
+offset_top = 64.0
+offset_right = 394.0
+offset_bottom = 184.0
 
 [node name="Label" type="Label" parent="UI_Control/cameraOffset"]
 layout_mode = 2
@@ -188,3 +129,32 @@ layout_mode = 2
 max_value = 360.0
 allow_greater = true
 allow_lesser = true
+
+[node name="freeViewButton" type="Button" parent="UI_Control"]
+layout_mode = 0
+offset_left = 127.0
+offset_top = 26.0
+offset_right = 209.0
+offset_bottom = 57.0
+text = "Free view
+"
+
+[node name="ItemList" type="ItemList" parent="UI_Control"]
+clip_contents = false
+layout_mode = 2
+offset_left = 8.0
+offset_top = 64.0
+offset_right = 80.0
+offset_bottom = 639.0
+auto_width = true
+auto_height = true
+same_column_width = true
+fixed_column_width = 100
+
+[node name="label" type="Label" parent="UI_Control"]
+layout_mode = 2
+offset_left = 8.0
+offset_top = 37.0
+offset_right = 66.0
+offset_bottom = 60.0
+text = "Entities"
