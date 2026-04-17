@@ -28,6 +28,7 @@ var surface_basis: Basis
 var curr_yaw: float
 var curr_pitch: float
 var moving_direction: Vector3
+var speed_multiplier: float = 1.0
 
 @export var entity_to_follow: Node3D = null
 
@@ -187,6 +188,13 @@ func movement_input(delta: float) -> void:
 		var delta_pitch: float = mouse_velocity.y * delta * self.rotation_speed
 		self.rotate_camera(delta_pitch, delta_yaw)
 	
+	# Calculate speed multiplier based on Shift and Control
+	speed_multiplier = 1.0
+	if Input.is_key_pressed(KEY_SHIFT):
+		speed_multiplier *= 2.0
+	if Input.is_key_pressed(KEY_CTRL):
+		speed_multiplier *= 0.5
+	
 	var direction := Vector3.ZERO
 	var movingBasis: Basis = self.global_transform.basis
 
@@ -219,7 +227,7 @@ func movement_input(delta: float) -> void:
 func camera_walk_ecef(direction: Vector3) -> void:
 	if direction == Vector3.ZERO:
 		return
-	direction *= -self.move_speed
+	direction *= -self.move_speed * self.speed_multiplier
 	
 	self.globe_node.ecefX += direction.x
 	self.globe_node.ecefY += direction.y
@@ -227,9 +235,9 @@ func camera_walk_ecef(direction: Vector3) -> void:
 
 func camera_walk_physical(direction: Vector3) -> void:
 	if desired_cam_pos == Vector3.ZERO:
-		self.desired_cam_pos = self.global_position + direction * self.move_speed
+		self.desired_cam_pos = self.global_position + direction * self.move_speed * self.speed_multiplier
 
-	self.desired_cam_pos += direction * self.move_speed
+	self.desired_cam_pos += direction * self.move_speed * self.speed_multiplier
 	self.is_moving_physical = direction != Vector3.ZERO
 
 func update_camera_pos_physical() -> void:

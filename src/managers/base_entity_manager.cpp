@@ -68,7 +68,7 @@ void BaseEntityManager::on_item_selected(int32_t index) const
         cameraNode_->set("entity_to_follow", model_);
         // pitch, yaw, roll
         cameraNode_->set("follow_rotation_offset_degrees", godot::Vector3(0,90,0));
-        cameraNode_->set("follow_offset", godot::Vector3(100,35,0));
+        cameraNode_->set("follow_offset", godot::Vector3(30,5,0));
     }
 }
 

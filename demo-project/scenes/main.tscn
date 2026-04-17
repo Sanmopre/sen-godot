@@ -1,28 +1,25 @@
-[gd_scene load_steps=5 format=3 uid="uid://dpt2dfe62v10o"]
+[gd_scene load_steps=6 format=3 uid="uid://dpt2dfe62v10o"]
 
 [ext_resource type="Script" uid="uid://cia7bmm06vhwx" path="res://scripts/camera/dynamicCamera.gd" id="1_o5qli"]
+[ext_resource type="Sky" uid="uid://b6ffjku47471j" path="res://cloud_sky/clouds_sky.tres" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://b55g08181nufj" path="res://cloud_sky/sun.gd" id="3_jyhfs"]
+[ext_resource type="Script" uid="uid://cfd7draxdl1cf" path="res://cloud_sky/date_time_location.gd" id="4_tbgi4"]
 
-[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_o5qli"]
-
-[sub_resource type="Sky" id="Sky_0wfyh"]
-resource_local_to_scene = true
-sky_material = SubResource("PhysicalSkyMaterial_o5qli")
-
-[sub_resource type="Environment" id="Environment_o5qli"]
+[sub_resource type="Environment" id="Environment_sugp2"]
 background_mode = 2
-sky = SubResource("Sky_0wfyh")
-ambient_light_source = 3
-glow_enabled = true
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.001
+sky = ExtResource("2_0wfyh")
+sky_rotation = Vector3(0, -0.0541052, -0.867429)
+tonemap_mode = 3
+tonemap_white = 3.53
 
 [node name="main" type="Node3D"]
+
+[node name="environment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_sugp2")
 
 [node name="senNode" type="SenNode" parent="."]
 item_list_path = NodePath("../UI_Control/ItemList")
 georeference_path = NodePath("../georeference")
-
-[node name="light" type="DirectionalLight3D" parent="."]
 
 [node name="georeference" type="CesiumGeoreference" parent="."]
 ecefX = 4.84959e+06
@@ -40,15 +37,13 @@ maximum_simultaneous_tile_loads = 30
 forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
+show_hierarchy = false
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
-
-[node name="environment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_o5qli")
 
 [node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("free_view_button", "entity_list", "x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]
 far = 10000.0
 script = ExtResource("1_o5qli")
-move_speed = 50.0
+move_speed = 35.0
 free_view_button = NodePath("../UI_Control/freeViewButton")
 entity_list = NodePath("../UI_Control/ItemList")
 x_box = NodePath("../UI_Control/cameraOffset/cartesianPosition/x")
@@ -59,7 +54,6 @@ rot_y_box = NodePath("../UI_Control/cameraOffset/eulerAngles/pitch")
 rot_z_box = NodePath("../UI_Control/cameraOffset/eulerAngles/roll")
 globe_node = NodePath("../georeference")
 tilesets = [NodePath("../georeference/googleTiles")]
-render_atmosphere = true
 
 [node name="UI_Control" type="Control" parent="."]
 layout_mode = 3
@@ -158,3 +152,14 @@ offset_top = 37.0
 offset_right = 66.0
 offset_bottom = 60.0
 text = "Entities"
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.109518, -0.99378, 0.0202045, -0.981378, -0.104879, 0.160932, -0.157812, -0.0374532, -0.986759, 0.00832629, 2.33525, 0)
+script = ExtResource("3_jyhfs")
+
+[node name="DateTimeLocation" type="Node3D" parent="."]
+script = ExtResource("4_tbgi4")
+day_of_the_year = 244
+time_in_seconds = 69407.0
+latitude = 51.93
+longitude = 5.94
