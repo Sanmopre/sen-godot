@@ -37,7 +37,6 @@ maximum_simultaneous_tile_loads = 30
 forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
-show_hierarchy = false
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
 [node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("free_view_button", "entity_list", "x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]
