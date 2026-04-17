@@ -9,12 +9,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 list(APPEND CMAKE_PREFIX_PATH "$ENV{SEN_PATH}/cmake")
 find_package(sen REQUIRED)
 
+# Godot settings
 set(GODOTCPP_TARGET editor CACHE STRING "Godot build target")
 set(GODOTCPP_PRECISION double CACHE STRING "Godot precision")
 set(GODOTCPP_CUSTOM_API_FILE $ENV{GODOT_API_JSON} CACHE FILEPATH "Godot custom extension API file")
 set(GODOTCPP_TARGET template_release CACHE STRING "Godot build target")
 option(GODOTCPP_USE_HOT_RELOAD "Enable hot reload support" ON)
 
+# Add godot cpp
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/submodules/godot-cpp)
 
 add_library(${PROJECT_NAME} SHARED
@@ -80,8 +82,8 @@ target_include_directories(${PROJECT_NAME}
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME "sen-godot"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/demo-project/bin"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/demo-project/bin"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/godot-project/bin"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/godot-project/bin"
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE

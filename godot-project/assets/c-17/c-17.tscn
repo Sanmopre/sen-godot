@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddfux3jofp35y"]
+
+[ext_resource type="PackedScene" uid="uid://nlkyev3iqhhy" path="res://assets/c-17/c17__transport_aircraft.glb" id="1_pi113"]
+
+[node name="Sketchfab_Scene" instance=ExtResource("1_pi113")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="Sketchfab_model" parent="." index="0"]
+transform = Transform3D(3.1222e-17, -0.509894, 3.1222e-17, 0, 3.1222e-17, 0.509894, -0.509894, -3.1222e-17, 1.9118e-33, 0, 0, 0)

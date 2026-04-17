@@ -1,3 +1,16 @@
+// ================================
+//
+// sen_godot
+// File: sen_node.h
+//
+// Author: Sanmopre
+// Copyright (c) 2026 Santiago Moliner
+//
+// Licensed under the MIT License.
+// See LICENSE file for details.
+//
+// ================================
+
 #pragma once
 
 #include "sen_godot_component.h"

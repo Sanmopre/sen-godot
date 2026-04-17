@@ -1,3 +1,16 @@
+// ================================
+//
+// sen_godot
+// File: expendable_manager.h
+//
+// Author: Sanmopre
+// Copyright (c) 2026 Santiago Moliner
+//
+// Licensed under the MIT License.
+// See LICENSE file for details.
+//
+// ================================
+
 #pragma once
 
 #include "physical_entity_manager.h"

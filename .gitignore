@@ -1,5 +1,5 @@
 project
 build
-demo-project/.godot
+godot-project/.godot
 cmake-build-debug
 cmake-build-release

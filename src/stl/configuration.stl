@@ -1,3 +1,16 @@
+// ================================
+//
+// sen_godot
+// File: configuration.stl
+//
+// Author: Sanmopre
+// Copyright (c) 2026 Santiago Moliner
+//
+// Licensed under the MIT License.
+// See LICENSE file for details.
+//
+// ================================
+
 package configuration;
 
 enum Model : u32

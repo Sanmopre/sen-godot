@@ -1,3 +1,16 @@
+// ================================
+//
+// sen_godot
+// File: register_types.cpp
+//
+// Author: Sanmopre
+// Copyright (c) 2026 Santiago Moliner
+//
+// Licensed under the MIT License.
+// See LICENSE file for details.
+//
+// ================================
+
 #include "register_types.h"
 #include "sen_node.h"
 #include "managers/aircraft_manager.h"
