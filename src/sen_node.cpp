@@ -56,6 +56,17 @@ void SenNode::_ready()
         }
     }
 
+    if (!debug_mode_path_.is_empty())
+    {
+        uiComponents_->debugMode = get_node<CheckButton>(debug_mode_path_);
+
+        if (!uiComponents_->debugMode)
+        {
+            UtilityFunctions::push_error("DebugMode path is not a CheckButton!");
+        }
+    }
+
+
     georeferenceNode_ = get_node_or_null(georeferencePath_);
     if (!georeferenceNode_)
     {
@@ -124,8 +135,14 @@ void SenNode::_bind_methods()
     ClassDB::bind_method(D_METHOD("set_item_list_path", "path"), &SenNode::set_item_list_path);
     ClassDB::bind_method(D_METHOD("get_item_list_path"), &SenNode::get_item_list_path);
 
+    ClassDB::bind_method(D_METHOD("set_debug_mode_path", "path"), &SenNode::set_debug_mode_path);
+    ClassDB::bind_method(D_METHOD("get_debug_mode_path"), &SenNode::get_debug_mode_path);
+
     ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "item_list_path"),
                  "set_item_list_path", "get_item_list_path");
+
+    ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "debug_mode_path_"),
+                 "set_debug_mode_path", "get_debug_mode_path");
 
     ADD_PROPERTY(
         godot::PropertyInfo(godot::Variant::NODE_PATH, "georeference_path"),

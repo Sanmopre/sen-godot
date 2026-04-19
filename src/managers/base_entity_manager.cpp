@@ -148,19 +148,24 @@ void BaseEntityManager::_ready()
     // Get node path
     cameraNode_ = get_tree()->get_root()->get_node_or_null(godot::NodePath("main/Camera"));
 
-    // TODO: Add debug mode and show the labels, and make it always the same size
-    // godot::Label3D* label = memnew(godot::Label3D);
-    // label->set_text(interface_->asObject().getName().c_str());
-    // label->set_position(godot::Vector3(0.0, 7.5, 0.0));
-    // label->set_billboard_mode(godot::BaseMaterial3D::BILLBOARD_ENABLED);
-    // label->set_pixel_size(1.0f);
-    // label->set_draw_flag(godot::Label3D::FLAG_DISABLE_DEPTH_TEST, true);
-    // pivot_.roll->add_child(label);
-    // label->set_owner(pivot_.roll->get_owner());
+    // Create label
+    label_ = memnew(godot::Label3D);
+    label_->set_text(interface_->asObject().getName().c_str());
+    label_->set_position(godot::Vector3(0.0, 7.5, 0.0));
+    label_->set_billboard_mode(godot::BaseMaterial3D::BILLBOARD_ENABLED);
+    // label_->set_fixed_size(true); Available in newer godot version
+    label_->set_pixel_size(1.0f);
+    label_->set_draw_flag(godot::Label3D::FLAG_DISABLE_DEPTH_TEST, true);
+
+    pivot_.roll->add_child(label_);
+    label_->set_owner(pivot_.roll->get_owner());
 }
 
 void BaseEntityManager::_process(double p_delta)
 {
+    // Show the label only if we are in debug mode
+    label_->set_visible(getConfig()->uiComponents_->debugMode->is_pressed());
+
     // Set ECEF position
     set_position(ecefLocation_);
 

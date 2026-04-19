@@ -15,6 +15,9 @@
 
 #include "root_manager.h"
 
+// godot
+#include <godot_cpp/classes/label3d.hpp>
+
 // std_fom
 #include "rpr/rpr-base_v2.0.xml.h"
 
@@ -61,6 +64,7 @@ private:
     std::unique_ptr<sen::util::DeadReckoner<InterfaceType>> deadReckoner_;
     std::string entityType;
     godot::Node *cameraNode_ = nullptr;
+    godot::Label3D* label_ = nullptr;
 
 private:
     // properties

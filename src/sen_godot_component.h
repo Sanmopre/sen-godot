@@ -17,6 +17,7 @@
 
 // godot
 #include "godot_cpp/classes/item_list.hpp"
+#include "godot_cpp/classes/check_button.hpp"
 
 // sen
 #include <sen/kernel/test_kernel.h>
@@ -38,6 +39,7 @@ namespace godot
 struct UI_Components
 {
     godot::ItemList* itemList = nullptr;
+    godot::CheckButton* debugMode = nullptr;
 };
 
 class SenGodotComponent : public sen::kernel::Component

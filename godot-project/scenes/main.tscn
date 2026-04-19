@@ -19,6 +19,7 @@ environment = SubResource("Environment_sugp2")
 
 [node name="senNode" type="SenNode" parent="."]
 item_list_path = NodePath("../UI_Control/ItemList")
+debug_mode_path_ = NodePath("../UI_Control/CheckButton")
 georeference_path = NodePath("../georeference")
 
 [node name="georeference" type="CesiumGeoreference" parent="."]
@@ -31,9 +32,10 @@ altitude = 2254.06
 origin_type = 1
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, 1, 0, -1, 6.12323e-17, 0, 0, 0)
 
-[node name="googleTiles" type="Cesium3DTileset" parent="georeference"]
-maximum_screen_space_error = 25.0
-maximum_simultaneous_tile_loads = 30
+[node name="Google Photorealistic 3D Tiles" type="Cesium3DTileset" parent="georeference"]
+maximum_screen_space_error = 32.0
+maximum_simultaneous_tile_loads = 40
+loading_descendant_limit = 40
 forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
@@ -52,7 +54,7 @@ rot_x_box = NodePath("../UI_Control/cameraOffset/eulerAngles/yaw")
 rot_y_box = NodePath("../UI_Control/cameraOffset/eulerAngles/pitch")
 rot_z_box = NodePath("../UI_Control/cameraOffset/eulerAngles/roll")
 globe_node = NodePath("../georeference")
-tilesets = [NodePath("../georeference/googleTiles")]
+tilesets = [NodePath("../georeference/Google Photorealistic 3D Tiles")]
 
 [node name="UI_Control" type="Control" parent="."]
 layout_mode = 3
@@ -151,6 +153,14 @@ offset_top = 37.0
 offset_right = 66.0
 offset_bottom = 60.0
 text = "Entities"
+
+[node name="CheckButton" type="CheckButton" parent="UI_Control"]
+layout_mode = 0
+offset_left = 233.0
+offset_top = 26.0
+offset_right = 331.0
+offset_bottom = 57.0
+text = "Debug"
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.109518, -0.99378, 0.0202045, -0.981378, -0.104879, 0.160932, -0.157812, -0.0374532, -0.986759, 0.00832629, 2.33525, 0)

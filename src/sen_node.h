@@ -50,6 +50,16 @@ public:
     [[nodiscard]] NodePath get_item_list_path() const {
         return item_list_path_;
     }
+
+    void set_debug_mode_path(const godot::NodePath &path)
+    {
+        debug_mode_path_ = path;
+    }
+
+    [[nodiscard]] godot::NodePath get_debug_mode_path() const
+    {
+        return debug_mode_path_;
+    }
 public:
     [[nodiscard]] Node* getGeoreferenceNode() const noexcept;
 
@@ -64,7 +74,7 @@ private: // References
 private:
     std::unique_ptr<UI_Components> uiComponents_;
     NodePath item_list_path_;
-
+    NodePath debug_mode_path_;
 
 };
 
