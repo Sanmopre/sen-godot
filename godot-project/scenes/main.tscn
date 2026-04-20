@@ -29,7 +29,6 @@ ecefZ = 4.12123e+06
 latitude = 40.493
 longitude = -3.577
 altitude = 2254.06
-origin_type = 1
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, 1, 0, -1, 6.12323e-17, 0, 0, 0)
 
 [node name="Google Photorealistic 3D Tiles" type="Cesium3DTileset" parent="georeference"]
@@ -143,8 +142,10 @@ offset_right = 80.0
 offset_bottom = 639.0
 auto_width = true
 auto_height = true
+item_count = 1
 same_column_width = true
 fixed_column_width = 100
+item_0/text = "A400M_GAF_1"
 
 [node name="label" type="Label" parent="UI_Control"]
 layout_mode = 2

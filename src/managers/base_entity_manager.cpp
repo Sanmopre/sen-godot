@@ -20,12 +20,14 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/label3d.hpp>
 #include <godot_cpp/variant/node_path.hpp>
+#include "godot_cpp/classes/scene_tree.hpp"
+#include "godot_cpp/classes/window.hpp"
+
 // sen
 #include <sen/kernel/component_api.h>
 
 #include "../sen_godot_component.h"
-#include "godot_cpp/classes/scene_tree.hpp"
-#include "godot_cpp/classes/window.hpp"
+#include "../sen_node.h"
 
 void BaseEntityManager::_bind_methods()
 {
@@ -45,8 +47,11 @@ void BaseEntityManager::setInterface(sen::Object* interface, ComponentConfigurat
 
 void BaseEntityManager::align_belly_to_origin()
 {
-    const godot::Vector3 toCenter = (godot::Vector3(0, 0, 0) - get_global_position()).normalized();
-    if (toCenter.length_squared() < 1e-12) {
+    const godot::Vector3 normal  = getConfig()->senNode_->getGeoreferenceNode()->call("get_normal_at_surface_pos", ecefLocation_);
+
+    const godot::Vector3 toCenter = -normal.normalized();
+    if (toCenter.length_squared() < 1e-12)
+    {
         return;
     }
 
@@ -93,7 +98,7 @@ void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
         return;
     }
 
-    // Set the ECEF position of the entity (Currently working when georeference node is set to true origin)
+    // Set the ECEF position of the entity
     const auto situation = deadReckoner_->situation(api->getTime());
     ecefLocation_ = godot::Vector3{situation.worldLocation.x.get(), situation.worldLocation.y.get(), situation.worldLocation.z.get()};
 
@@ -167,7 +172,11 @@ void BaseEntityManager::_process(double p_delta)
     label_->set_visible(getConfig()->uiComponents_->debugMode->is_pressed());
 
     // Set ECEF position
-    set_position(ecefLocation_);
+    const Object *obj = getConfig()->senNode_->getGeoreferenceNode();
+    const f64 georeferenceX = obj->get("ecefX");
+    const f64 georeferenceY = obj->get("ecefY");
+    const f64 georeferenceZ = obj->get("ecefZ");
+    set_position(ecefLocation_ - godot::Vector3(georeferenceX, georeferenceY, georeferenceZ));
 
     // Set orientation
     pivot_.yaw->set_rotation(godot::Vector3(0.0, rotation_.y, 0.0));

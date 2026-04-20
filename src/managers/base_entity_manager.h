@@ -56,6 +56,7 @@ public:
     [[nodiscard]] Pivot* getEntityPivots() noexcept;
     [[nodiscard]] Node* getModelNode() const noexcept;
     void on_item_selected(int32_t index) const;
+
 private:
     InterfaceType* interface_ = nullptr;
     Node* model_ = nullptr;
