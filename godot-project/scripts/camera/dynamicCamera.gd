@@ -191,9 +191,9 @@ func movement_input(delta: float) -> void:
 	# Calculate speed multiplier based on Shift and Control
 	speed_multiplier = 1.0
 	if Input.is_key_pressed(KEY_SHIFT):
-		speed_multiplier *= 2.0
+		speed_multiplier *= 4.0
 	if Input.is_key_pressed(KEY_CTRL):
-		speed_multiplier *= 0.5
+		speed_multiplier *= 0.15
 	
 	var direction := Vector3.ZERO
 	var movingBasis: Basis = self.global_transform.basis

@@ -11,6 +11,7 @@ sky = ExtResource("2_0wfyh")
 sky_rotation = Vector3(0, -0.0541052, -0.867429)
 tonemap_mode = 3
 tonemap_white = 3.53
+glow_enabled = true
 
 [node name="main" type="Node3D"]
 
@@ -38,6 +39,7 @@ loading_descendant_limit = 40
 forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
+show_hierarchy = false
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
 [node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("free_view_button", "entity_list", "x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]
@@ -142,10 +144,8 @@ offset_right = 80.0
 offset_bottom = 639.0
 auto_width = true
 auto_height = true
-item_count = 1
 same_column_width = true
 fixed_column_width = 100
-item_0/text = "A400M_GAF_1"
 
 [node name="label" type="Label" parent="UI_Control"]
 layout_mode = 2
@@ -164,7 +164,7 @@ offset_bottom = 57.0
 text = "Debug"
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.109518, -0.99378, 0.0202045, -0.981378, -0.104879, 0.160932, -0.157812, -0.0374532, -0.986759, 0.00832629, 2.33525, 0)
+transform = Transform3D(0.048702, -0.998609, 0.0202045, -0.985947, -0.0448283, 0.160932, -0.159802, -0.0277583, -0.986758, 0.00832629, 2.33525, 0)
 script = ExtResource("3_jyhfs")
 
 [node name="DateTimeLocation" type="Node3D" parent="."]
