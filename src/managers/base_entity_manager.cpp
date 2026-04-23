@@ -33,6 +33,7 @@ void BaseEntityManager::_bind_methods()
 {
     godot::ClassDB::bind_method(godot::D_METHOD("align_belly_to_origin"), &BaseEntityManager::align_belly_to_origin);
     godot::ClassDB::bind_method(godot::D_METHOD("on_item_selected", "index"), &BaseEntityManager::on_item_selected);
+    godot::ClassDB::bind_method(godot::D_METHOD("get_ecef_position"), &BaseEntityManager::get_ecef_position);
 }
 
 void BaseEntityManager::setInterface(sen::Object* interface, ComponentConfiguration* config)
@@ -78,16 +79,30 @@ godot::Node* BaseEntityManager::getModelNode() const noexcept
     return model_;
 }
 
-void BaseEntityManager::on_item_selected(int32_t index) const
+void BaseEntityManager::on_item_selected(int32_t index)
 {
+    // Get metadata key
     const auto metadata = getConfig()->uiComponents_->itemList->get_item_metadata(index);
+
+    // Set the item to not selected to deselect
+    entitySelected_ = false;
+
     if (godot::String(metadata) == itemMetadataKey_)
     {
         cameraNode_->set("entity_to_follow", model_);
         // pitch, yaw, roll
         cameraNode_->set("follow_rotation_offset_degrees", godot::Vector3(0,90,0));
         cameraNode_->set("follow_offset", godot::Vector3(30,5,0));
+        cameraNode_->set("entity_to_follow_ecef", ecefLocation_);
+
+        // Entity selected
+        entitySelected_ = true;
     }
+}
+
+godot::Vector3 BaseEntityManager::get_ecef_position() const noexcept
+{
+    return ecefLocation_;
 }
 
 void BaseEntityManager::componentUpdate(sen::kernel::RunApi* api)
@@ -170,6 +185,12 @@ void BaseEntityManager::_process(double p_delta)
 {
     // Show the label only if we are in debug mode
     label_->set_visible(getConfig()->uiComponents_->debugMode->is_pressed());
+
+    // If the entity is selected, we feed the information about the ecef position to the camera
+    if (entitySelected_)
+    {
+        cameraNode_->set("entity_to_follow_ecef", ecefLocation_);
+    }
 
     // Set ECEF position
     const Object *obj = getConfig()->senNode_->getGeoreferenceNode();

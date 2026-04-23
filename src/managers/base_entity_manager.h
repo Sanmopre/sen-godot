@@ -55,7 +55,11 @@ public:
     void align_belly_to_origin();
     [[nodiscard]] Pivot* getEntityPivots() noexcept;
     [[nodiscard]] Node* getModelNode() const noexcept;
-    void on_item_selected(int32_t index) const;
+    void on_item_selected(int32_t index);
+
+public:
+    // object api
+    [[nodiscard]] godot::Vector3 get_ecef_position() const noexcept;
 
 private:
     InterfaceType* interface_ = nullptr;
@@ -66,6 +70,7 @@ private:
     std::string entityType;
     godot::Node *cameraNode_ = nullptr;
     godot::Label3D* label_ = nullptr;
+    bool entitySelected_ = false;
 
 private:
     // properties

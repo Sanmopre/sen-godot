@@ -31,6 +31,7 @@ var moving_direction: Vector3
 var speed_multiplier: float = 1.0
 
 @export var entity_to_follow: Node3D = null
+@export var entity_to_follow_ecef: Vector3 = Vector3.ZERO
 
 # UI Elements
 @export var free_view_button: Button
@@ -126,6 +127,12 @@ func _sync_rotation_boxes_from_follow_rotation_offset() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if entity_to_follow != null:
+        
+		# Rebase the georeference origin to the entity's true ECEF position
+		self.globe_node.ecefX = entity_to_follow_ecef.x
+		self.globe_node.ecefY = entity_to_follow_ecef.y
+		self.globe_node.ecefZ = entity_to_follow_ecef.z
+
 		var target_transform := entity_to_follow.global_transform
 		var target_basis := target_transform.basis.orthonormalized()
 
@@ -140,7 +147,6 @@ func _physics_process(_delta: float) -> void:
 		rot_offset_basis = rot_offset_basis.rotated(Vector3.BACK, deg_to_rad(follow_rotation_offset_degrees.z))
 
 		var final_basis := (target_basis * rot_offset_basis).orthonormalized()
-
 		global_transform = Transform3D(final_basis, target_pos)
 		return
 

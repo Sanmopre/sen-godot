@@ -39,7 +39,6 @@ loading_descendant_limit = 40
 forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
-show_hierarchy = false
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
 [node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("free_view_button", "entity_list", "x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]
@@ -164,7 +163,7 @@ offset_bottom = 57.0
 text = "Debug"
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.048702, -0.998609, 0.0202045, -0.985947, -0.0448283, 0.160932, -0.159802, -0.0277583, -0.986758, 0.00832629, 2.33525, 0)
+transform = Transform3D(0.048702, -0.998609, 0.0202045, -0.985947, -0.0448284, 0.160932, -0.159802, -0.0277583, -0.986758, 0.00832629, 2.33525, 0)
 script = ExtResource("3_jyhfs")
 
 [node name="DateTimeLocation" type="Node3D" parent="."]
