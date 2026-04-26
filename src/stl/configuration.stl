@@ -17,6 +17,7 @@ enum Model : u32
 {
   defaultModel,
   f18,
+  su57,
   a400,
   chaff,
   flare,

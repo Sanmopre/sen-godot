@@ -11,7 +11,13 @@ sky = ExtResource("2_0wfyh")
 sky_rotation = Vector3(0, -0.0541052, -0.867429)
 tonemap_mode = 3
 tonemap_white = 3.53
+ssr_enabled = true
+ssao_enabled = true
+sdfgi_enabled = true
 glow_enabled = true
+fog_light_color = Color(0.381114, 0.578847, 0.693557, 1)
+fog_density = 0.0
+fog_sky_affect = 0.0
 
 [node name="main" type="Node3D"]
 
@@ -39,6 +45,7 @@ loading_descendant_limit = 40
 forbid_holes = true
 create_physics_meshes = false
 ion_asset_id = 2275207
+show_hierarchy = true
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
 [node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("free_view_button", "entity_list", "x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]

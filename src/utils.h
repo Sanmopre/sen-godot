@@ -64,6 +64,8 @@
         return "res://assets/c-17/c-17.tscn";
     case configuration::Model::aim9:
         return "res://assets/aim-9/aim-9.tscn";
+    case configuration::Model::su57:
+        return "res://assets/su57/su57.tscn";
     default:
         return "res://assets/f18/f18.tscn";
     }

@@ -16,6 +16,6 @@ modelMappings:
   - disTypes: ["1:225:2:8:0:1:1", "2:225:2:8:0:0:1"]
     model: chaff
   - disTypes: ["1:225:2:1:1:1:9"]
-    model: f18
+    model: su57
   - disTypes: ["1:225:1:2:0:3:1"]
     model: aim9
