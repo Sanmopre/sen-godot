@@ -49,6 +49,7 @@ show_hierarchy = true
 transform = Transform3D(1, 0, 0, 0, 6.12323e-17, -1, 0, 1, 6.12323e-17, 0, 0, 0)
 
 [node name="Camera" type="Camera3D" parent="." node_paths=PackedStringArray("free_view_button", "entity_list", "x_box", "y_box", "z_box", "rot_x_box", "rot_y_box", "rot_z_box", "globe_node", "tilesets")]
+near = 2.0
 far = 10000.0
 script = ExtResource("1_o5qli")
 move_speed = 35.0

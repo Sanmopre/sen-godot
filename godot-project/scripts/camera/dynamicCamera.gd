@@ -201,34 +201,67 @@ func movement_input(delta: float) -> void:
 	if Input.is_key_pressed(KEY_CTRL):
 		speed_multiplier *= 0.15
 	
-	var direction := Vector3.ZERO
-	var movingBasis: Basis = self.global_transform.basis
+	if entity_to_follow == null:
+		var direction := Vector3.ZERO
+		var movingBasis: Basis = self.global_transform.basis
 
-	if Input.is_key_pressed(KEY_KP_ADD) or Input.is_key_pressed(KEY_PLUS):
-		self.offset_speed += self.move_speed * 0.1 * delta
-	if Input.is_key_pressed(KEY_KP_SUBTRACT) or Input.is_key_pressed(KEY_MINUS):
-		self.offset_speed = maxf(self.offset_speed - self.move_speed * 0.1 * delta, 0.0)
+		if Input.is_key_pressed(KEY_KP_ADD) or Input.is_key_pressed(KEY_PLUS):
+			self.offset_speed += self.move_speed * 0.1 * delta
+		if Input.is_key_pressed(KEY_KP_SUBTRACT) or Input.is_key_pressed(KEY_MINUS):
+			self.offset_speed = maxf(self.offset_speed - self.move_speed * 0.1 * delta, 0.0)
 
-	if Input.is_key_pressed(KEY_Q):
-		direction -= movingBasis.y
-	if Input.is_key_pressed(KEY_E):
-		direction += movingBasis.y
+		if Input.is_key_pressed(KEY_Q):
+			direction -= movingBasis.y
+		if Input.is_key_pressed(KEY_E):
+			direction += movingBasis.y
 
-	if Input.is_key_pressed(KEY_W):
-		direction -= movingBasis.z
-	if Input.is_key_pressed(KEY_S):
-		direction += movingBasis.z
+		if Input.is_key_pressed(KEY_W):
+			direction -= movingBasis.z
+		if Input.is_key_pressed(KEY_S):
+			direction += movingBasis.z
 
-	if Input.is_key_pressed(KEY_D):
-		direction += movingBasis.x
-	if Input.is_key_pressed(KEY_A):
-		direction -= movingBasis.x
-	if Input.is_key_pressed(KEY_KP_6):
-		rotate_z(delta * 0.5)
-	if Input.is_key_pressed(KEY_KP_4):
-		rotate_z(-delta * 0.5)
+		if Input.is_key_pressed(KEY_D):
+			direction += movingBasis.x
+		if Input.is_key_pressed(KEY_A):
+			direction -= movingBasis.x
+		if Input.is_key_pressed(KEY_KP_6):
+			rotate_z(delta * 0.5)
+		if Input.is_key_pressed(KEY_KP_4):
+			rotate_z(-delta * 0.5)
+			
+		self.moving_direction = direction.normalized()
+	else:
+		# Adjust follow offsets for free movement around entity
+		var target_transform := entity_to_follow.global_transform
+		var target_basis := target_transform.basis.orthonormalized()
+		if target_basis.determinant() < 0.0:
+			target_basis.x = -target_basis.x
 		
-	self.moving_direction = direction.normalized()
+		var delta_world := Vector3.ZERO
+		if Input.is_key_pressed(KEY_W):
+			delta_world -= self.global_basis.z * move_speed * delta * speed_multiplier
+		if Input.is_key_pressed(KEY_S):
+			delta_world += self.global_basis.z * move_speed * delta * speed_multiplier
+		if Input.is_key_pressed(KEY_A):
+			delta_world -= self.global_basis.x * move_speed * delta * speed_multiplier
+		if Input.is_key_pressed(KEY_D):
+			delta_world += self.global_basis.x * move_speed * delta * speed_multiplier
+		if Input.is_key_pressed(KEY_Q):
+			delta_world -= self.global_basis.y * move_speed * delta * speed_multiplier
+		if Input.is_key_pressed(KEY_E):
+			delta_world += self.global_basis.y * move_speed * delta * speed_multiplier
+		
+		var delta_local := target_basis.inverse() * delta_world
+		follow_offset += delta_local
+		
+		# Adjust rotation offsets
+		var delta_rot := Vector3.ZERO
+		if Input.is_key_pressed(KEY_KP_6):
+			delta_rot.z += delta * 30.0  # degrees per second
+		if Input.is_key_pressed(KEY_KP_4):
+			delta_rot.z -= delta * 30.0
+		
+		follow_rotation_offset_degrees += delta_rot
 
 func camera_walk_ecef(direction: Vector3) -> void:
 	if direction == Vector3.ZERO:
@@ -259,6 +292,12 @@ func update_camera_rotation() -> void:
 	self.curr_yaw = 0
 
 func rotate_camera(delta_pitch: float, delta_yaw: float) -> void:
+	if entity_to_follow != null:
+		# Adjust rotation offsets for attached mode
+		follow_rotation_offset_degrees.y -= rad_to_deg(delta_yaw)
+		follow_rotation_offset_degrees.x -= rad_to_deg(delta_pitch)
+		return
+	
 	self.curr_yaw += delta_yaw
 
 	var camera_forward: Vector3 = -self.global_basis.z.normalized()

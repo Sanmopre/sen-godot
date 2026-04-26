@@ -17,7 +17,7 @@ var atmosphere_manager: AtmosphereManager
 var last_hit_distance: float
 
 const RADII := 6378137.0
-const ACCEPTABLE_NEAR_PLANE := 9
+const ACCEPTABLE_NEAR_PLANE := 1.5
 
 func find_directional_light(node: Node) -> DirectionalLight3D:
 	if node is DirectionalLight3D:
@@ -35,7 +35,7 @@ func _ready() -> void:
 	# but you probably aren't using TrueOrigin in a single precision build
 	if self.globe_node.origin_type == CesiumGeoreference.CartographicOrigin:
 		self.far = 35358652.0
-		self.near = ACCEPTABLE_NEAR_PLANE
+		#self.near = ACCEPTABLE_NEAR_PLANE
 	else:
 		self.far = 149597870700.0 + 3*1392700000.0
 		# Get the ecef
