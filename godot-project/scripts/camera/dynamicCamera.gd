@@ -125,7 +125,9 @@ func _sync_rotation_boxes_from_follow_rotation_offset() -> void:
 	rot_y_box.set_block_signals(false)
 	rot_z_box.set_block_signals(false)
 
-func _physics_process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	super(delta)
+	movement_input(delta)
 	if entity_to_follow != null:
         
 		# Rebase the georeference origin to the entity's true ECEF position
@@ -149,7 +151,7 @@ func _physics_process(_delta: float) -> void:
 		var final_basis := (target_basis * rot_offset_basis).orthonormalized()
 		global_transform = Transform3D(final_basis, target_pos)
 		return
-
+		
 	self.surface_basis = self.calculate_surface_basis()
 	self.update_camera_rotation()
 	
@@ -161,10 +163,6 @@ func _physics_process(_delta: float) -> void:
 	else:
 		var ecefDir: Vector3 = self.globe_node.get_initial_tx_engine_to_ecef() * self.moving_direction
 		camera_walk_ecef(-ecefDir.normalized())
-
-func _process(delta: float) -> void:
-	super(delta)
-	movement_input(delta)
 
 func calculate_surface_basis() -> Basis:
 	var cam_ecef_pos: Vector3

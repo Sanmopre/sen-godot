@@ -171,12 +171,12 @@ offset_bottom = 57.0
 text = "Debug"
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.048702, -0.998609, 0.0202045, -0.985947, -0.0448284, 0.160932, -0.159802, -0.0277583, -0.986758, 0.00832629, 2.33525, 0)
+transform = Transform3D(0.522225, -0.852568, 0.0202045, -0.843321, -0.512747, 0.160932, -0.126846, -0.101082, -0.986758, 0.00832629, 2.33525, 0)
 script = ExtResource("3_jyhfs")
 
 [node name="DateTimeLocation" type="Node3D" parent="."]
 script = ExtResource("4_tbgi4")
-day_of_the_year = 244
-time_in_seconds = 69407.0
+day_of_the_year = 245
+time_in_seconds = 29807.0
 latitude = 51.93
 longitude = 5.94
